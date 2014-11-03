@@ -17,8 +17,7 @@ public class Arimaa {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // test 123 12345 fdljkfsdljkfljkfdkfdslksglkgdgdlgdl 
-        // it`s great fun
+        // Ernst
     }
     
 }
