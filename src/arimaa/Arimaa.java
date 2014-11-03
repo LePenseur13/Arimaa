@@ -8,7 +8,7 @@ package arimaa;
 
 /**
  *
- * @author JosefChristoph
+ * @author JosefChristoph, AlexanderJürgen
  */
 public class Arimaa {
 
