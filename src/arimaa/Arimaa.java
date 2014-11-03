@@ -18,6 +18,7 @@ public class Arimaa {
     public static void main(String[] args) {
         // test
         int i = 13;
+        // this is awsome
     }
     
 }
