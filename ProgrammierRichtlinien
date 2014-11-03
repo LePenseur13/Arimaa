@@ -1,0 +1,28 @@
+########## PROGRAMMIERRICHTLINIEN ##########
+
+##### STRUKTURIERTE PROGRAMMIERUNG #####
+
+# sinvolle Kommentare ( JavaDoc, Deutsch )
+
+    Was passiert in dem jeweiligen Abschnitt?
+    
+    Wie passiert es?
+   
+    
+# LESBARKEIT ist zwingend nötig
+
+
+# Leerzeichen zur Formatierung verwenden
+
+
+# Leerzeichen:
+    
+    nach öffnenden und vor schließenden Klammern
+    
+    vor und nach jeden Operator
+
+
+# Namensgebung - CamelCase, Deutsch und vor allem sprechend
+
+
+# Commit Kommentar über die jeweiligen Veränderungen
