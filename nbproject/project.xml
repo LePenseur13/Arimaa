@@ -11,5 +11,40 @@
                 <root id="test.src.dir"/>
             </test-roots>
         </data>
+        <spellchecker-wordlist xmlns="http://www.netbeans.org/ns/spellchecker-wordlist/1">
+            <word>bekannt</word>
+            <word>dass</word>
+            <word>der</word>
+            <word>des</word>
+            <word>Diese</word>
+            <word>direkt</word>
+            <word>figur</word>
+            <word>Geloschte</word>
+            <word>Gelöschte</word>
+            <word>gibt</word>
+            <word>Implementierung</word>
+            <word>int</word>
+            <word>ist</word>
+            <word>kompatibel</word>
+            <word>koord</word>
+            <word>Koordinate</word>
+            <word>Koordinaten</word>
+            <word>Kopie</word>
+            <word>löschenden</word>
+            <word>löscht</word>
+            <word>Methode</word>
+            <word>Schach</word>
+            <word>setzt</word>
+            <word>Spielfelds</word>
+            <word>Spielfigur</word>
+            <word>Spielfiguren</word>
+            <word>Stelle</word>
+            <word>tauscht</word>
+            <word>und</word>
+            <word>welches</word>
+            <word>zu</word>
+            <word>zurück</word>
+            <word>zwei</word>
+        </spellchecker-wordlist>
     </configuration>
 </project>
