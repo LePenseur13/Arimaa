@@ -64,7 +64,30 @@ enum Typ {
         this.Stärke = Stärke;
     }
     
-    public Typ getValue() {
-        
+    public Typ getValue( String str ) {
+        switch( str ) {
+            case "Elefant":
+                return Elefant;
+            case "Kamel":
+                return Kamel;
+            case "Pferd":
+                return Pferd;
+            case "Hund":
+                return Hund;
+            case "Katze":
+                return Katze;
+            case "Kaninchen":
+                return Kaninchen;
+            default:
+                throw new IllegalArgumentException( "Ungültiger String!" );
+        }
+    }
+    
+    public int compare( Typ t ) {
+        return this.Stärke - t.Stärke;
+    }
+    
+    public boolean isStronger( Typ t ) {
+        return this.compare( t ) > 0;
     }
 }

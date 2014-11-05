@@ -17,10 +17,10 @@ public class Spielfeld {
     
     //Konstruktoren
     public Spielfeld() {
-        Feld = new Spielfigur[8][8];
+        Feld = new Spielfigur[ 8 ][ 8 ];
     }
     
-    private Spielfeld(Spielfigur[][] Feld) {
+    private Spielfeld( Spielfigur[][] Feld ) {
         this.Feld = Feld;
     }
     
