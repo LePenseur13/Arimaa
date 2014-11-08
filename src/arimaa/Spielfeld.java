@@ -10,62 +10,80 @@ import java.util.Arrays;
 /**
  *
  * @author Alexander Holzinger
+ * @version 1.0
  */
 public class Spielfeld {
     // Attribute
-    final private Spielfigur[][] Feld;
+    final private Spielfigur[][] feld;
     
     //Konstruktoren
     public Spielfeld() {
-        Feld = new Spielfigur[ 8 ][ 8 ];
+        feld = new Spielfigur[ 8 ][ 8 ];
     }
     
     private Spielfeld( Spielfigur[][] Feld ) {
-        this.Feld = Feld;
+        this.feld = Feld;
     }
     
     // Methoden
     /**
      *
-     * @param AnderesFeld
+     * @param AnderesFeld Feld mit dem verglichen wird
      * @return 
      * @throws IndexOutOfBoundsException
      * @author Alexander Holzinger
      * @version 1.0
      */
     public boolean equals( Spielfeld AnderesFeld ) {
-        return Arrays.equals( this.Feld, AnderesFeld.Feld );
+        return Arrays.equals(this.feld, AnderesFeld.feld );
     }
     
     /**
-     * Gibt eine Kopie des Spielfelds zurück
      * 
-     * @return
+     * @return Anzahl der Figuren des Felds
+     * @author Alexander Holzinger
+     * @version 1.0
+     */
+    public int getNumberFiguren() {
+        int Figures = 0;
+        for ( Spielfigur[] reihe: feld ) {
+            for ( Spielfigur sf: reihe ) {
+                if ( sf != null) {
+                    Figures++;
+                }
+            }
+        }
+        return Figures;
+    }
+    
+    /**
+     * 
+     * @return Kopie des  Spielfelds
      * @author Alexander Holzinger
      * @version 1.0
      */
     public Spielfeld copy() {
-        return new Spielfeld(this.Feld.clone());
+        return new Spielfeld(this.feld.clone());
     }
     
     /**
      * Diese Methode setzt eine Spielfigur figur an die Stelle koord 
      * 
-     * @param koord
-     * @param figur
+     * @param koord Koordinaten auf die die Spielfiguren gesetzt wird
+     * @param figur Figur, die auf die Koordinaten gesetzt werden
      * @throws IndexOutOfBoundsException
      * @author Alexander Holzinger
      * @version 1.0
      */
     public void set( String koord, Spielfigur figur ) throws IndexOutOfBoundsException {
         int[] koords = koordsValid( koord );
-        Feld[ koords[ 0 ] ][ koords[ 1 ] ] = figur;
+        feld[ koords[ 0 ] ][ koords[ 1 ] ] = figur;
     }
     
     /**
      * Diese Methode gibt die Figur an der Stelle koord zurück
      * 
-     * @param koord
+     * @param koord Koordinaten der Figur
      * @return Gibt die Spielfigur an den Koordinaten koord zurück
      * @throws IndexOutOfBoundsException
      * @author Alexander Holzinger
@@ -73,7 +91,7 @@ public class Spielfeld {
      */
     public Spielfigur get( String koord ) throws IndexOutOfBoundsException {
         int[] koords = koordsValid( koord );
-        return Feld[ koords[ 0 ] ][ koords[ 1 ] ];
+        return feld[ koords[ 0 ] ][ koords[ 1 ] ];
     }
     
     /**
@@ -94,8 +112,8 @@ public class Spielfeld {
     /**
      * Diese Methode tauscht zwei Spielfiguren an den Koordinaten koord1 und koord2
      * 
-     * @param koord1
-     * @param koord2
+     * @param koord1 Koordinaten Spielfigur 1
+     * @param koord2 Koordinaten Spielfigur 2
      * @throws IndexOutOfBoundsException
      * @author Alexander Holzinger
      * @version 1.0
@@ -105,9 +123,9 @@ public class Spielfeld {
         int[] koords2 = koordsValid( koord2 );
         
         // Tauschen mit Hilfsvariable (tmp)
-        Spielfigur tmp = Feld[ koords1[ 0 ] ][ koords1[ 1 ] ];
-        Feld[ koords1[ 0 ] ][ koords1[ 1 ] ] = Feld[ koords2[ 0 ] ][ koords2[ 1 ] ];
-        Feld[ koords2[ 0 ] ][ koords2[ 1 ] ] = tmp;
+        Spielfigur tmp = feld[ koords1[ 0 ] ][ koords1[ 1 ] ];
+        feld[ koords1[ 0 ] ][ koords1[ 1 ] ] = feld[ koords2[ 0 ] ][ koords2[ 1 ] ];
+        feld[ koords2[ 0 ] ][ koords2[ 1 ] ] = tmp;
     }
     
     /**

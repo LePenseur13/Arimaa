@@ -12,19 +12,30 @@
             </test-roots>
         </data>
         <spellchecker-wordlist xmlns="http://www.netbeans.org/ns/spellchecker-wordlist/1">
+            <word>Anzahl</word>
+            <word>auf</word>
+            <word>beiden</word>
             <word>bekannt</word>
             <word>dass</word>
+            <word>dem</word>
             <word>der</word>
             <word>des</word>
             <word>Diese</word>
             <word>direkt</word>
+            <word>Feld</word>
+            <word>Felds</word>
             <word>figur</word>
+            <word>Figuren</word>
             <word>Geloschte</word>
             <word>Gelöschte</word>
+            <word>gesetzt</word>
             <word>gibt</word>
+            <word>hinzugefügt</word>
             <word>Implementierung</word>
             <word>int</word>
             <word>ist</word>
+            <word>Javadoc</word>
+            <word>Kommentare</word>
             <word>kompatibel</word>
             <word>koord</word>
             <word>Koordinate</word>
@@ -39,12 +50,20 @@
             <word>Spielfigur</word>
             <word>Spielfiguren</word>
             <word>Stelle</word>
+            <word>Stärken</word>
             <word>tauscht</word>
+            <word>Typ</word>
+            <word>Typen</word>
             <word>und</word>
+            <word>Unterschied</word>
+            <word>verglichen</word>
             <word>welches</word>
+            <word>werden</word>
+            <word>wird</word>
             <word>zu</word>
             <word>zurück</word>
             <word>zwei</word>
+            <word>Änderungen</word>
         </spellchecker-wordlist>
     </configuration>
 </project>
