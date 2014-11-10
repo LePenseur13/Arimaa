@@ -23,8 +23,8 @@ class Spielfigur {
      * @param typ 
      */
     public Spielfigur( String farbe, String typ ) {
-        this.farbe = this.farbe.getValue( farbe );
-        this.typ = this.typ.getValue( typ );
+        this.farbe = Farbe.valueOf( farbe );
+        this.typ = Typ.valueOf( typ );
     }
     
     //Methoden
@@ -39,10 +39,18 @@ class Spielfigur {
     
     /**
      * 
-     * @return 
+     * @return farbe
      */
     public Farbe getFarbe() {
         return farbe;
+    }
+    
+    /**
+     * 
+     * @return typ
+     */
+    public Typ getTyp() {
+        return typ;
     }
     
     /**
@@ -58,8 +66,14 @@ class Spielfigur {
      * 
      * @return 
      */
+
+    public String toString() {
+        return farbe.name().substring( 0, 2) + " " + typ.ordinal();
+    } 
+    
     public Spielfigur getCopy() {
         return new Spielfigur( farbe.toString(), typ.toString() );
+
     }
 }
 
@@ -117,40 +131,9 @@ enum Farbe {
  * @version 1.0
  */
 enum Typ {
-    Elefant( 6 ), Kamel( 5 ), Pferd( 4 ), Hund( 3 ), Katze( 2 ), Kaninchen( 1 );
-    private final Integer Stärke;
+    Kaninchen, Katze, Hund, Pferd, Kamel, Elefant;
+
     
-    /**
-     * 
-     * @param Stärke 
-     */
-    Typ( Integer Stärke ) {
-        this.Stärke = Stärke;
-    }
-    
-    /**
-     * 
-     * @param str
-     * @return 
-     */
-    public static Typ getValue( String str ) {
-        switch( str ) {
-            case "Elefant":
-                return Elefant;
-            case "Kamel":
-                return Kamel;
-            case "Pferd":
-                return Pferd;
-            case "Hund":
-                return Hund;
-            case "Katze":
-                return Katze;
-            case "Kaninchen":
-                return Kaninchen;
-            default:
-                throw new IllegalArgumentException( "Ungültiger String!" );
-        }
-    }
     
     /**
      * Gibt den Unterschied der Stärken, der beiden Typen an
@@ -159,7 +142,7 @@ enum Typ {
      * @return 
      */
     public int compare( Typ t ) {
-        return this.Stärke - t.Stärke;
+        return this.ordinal() - t.ordinal();
     }
     
     /**
