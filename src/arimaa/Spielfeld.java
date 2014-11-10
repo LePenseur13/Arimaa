@@ -134,18 +134,19 @@ public class Spielfeld {
      * 
      * @param koord Die Koordinaten im Format, dass von Schach bekannt ist (z.B.: A1, C7)
      * @return Ein int[ 2 ] mit der X- und Y-Koordinate
-     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
      * @author Alexander Holzinger
      * @version 1.0
      */
-    public int[] koordsValid( String koord ){
+    public int[] koordsValid( String koord ) throws IllegalArgumentException {
+        koord = koord.toUpperCase();
+        
         // Überprüfung
-        if ( koord.charAt( 0 ) > 72 || koord.charAt( 0 ) < 65 ) throw new IndexOutOfBoundsException( "Ungültige Koordinaten!" );
-        if ( koord.charAt( 1 ) > 56 || koord.charAt( 1 ) < 49 ) throw new IndexOutOfBoundsException( "Ungültige Koordinaten!" );
+        if ( koord.matches( "[a-hA-H][1-8]" ) ) throw new IllegalArgumentException( "Ungültige Koordinaten!" );
         
         // Buchstaben und Zahlen zu Indizes umformen
         int[] koords = new int[ 2 ];
-        koords[ 0 ] = koord.toUpperCase().charAt( 0 ) - 65;
+        koords[ 0 ] = koord.charAt( 0 ) - 65;
         koords[ 1 ] = koord.charAt( 1 ) - 49;
         return koords;
     }
