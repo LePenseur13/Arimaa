@@ -36,6 +36,9 @@ public class Arimaa {
         a.spielfeld.set( benutzerEingabe(), new Spielfigur( "Gold", "Katze" ) );
         System.out.println( a.spielfeld.toString() );
         */
+        Arimaa a = new Arimaa();
+        a.figurenSetzen();
+        
         Farbe f1 = Farbe.valueOf( "Gold" );
         Farbe f2 = Farbe.getValue( "Gold" );
         System.out.println( f1 == f2 );
@@ -90,6 +93,51 @@ public class Arimaa {
         } while( ! input.matches( "[a-hA-H][1-8]" ) ); // Prüft ob der gegebene String passt
         
         return input;
+    }
+    
+    public void figurenSetzen(){
+        //array mit allen Spielfiguren außer Kaninchen
+        Spielfigur[] figuren = { new Spielfigur( "Gold", "Elefant" ),
+                                 new Spielfigur( "Gold", "Kamel" ),
+                                 new Spielfigur( "Gold", "Pferd" ),
+                                 new Spielfigur( "Gold", "Pferd" ),
+                                 new Spielfigur( "Gold", "Hund" ),
+                                 new Spielfigur( "Gold", "Hund" ),
+                                 new Spielfigur( "Gold", "Katze" ),
+                                 new Spielfigur( "Gold", "Katze" )
+                                };
+        
+        for ( Spielfigur figur : figuren ){            
+            System.out.print( figur.getTyp() + ": " );
+            spielfeld.set( aufstellungsKoordsEingeben(), figur );
+            System.out.println();
+            System.out.println(spielfeld.toString());
+        }
+    }
+    
+    public String aufstellungsKoordsEingeben(){
+        BufferedReader br = new BufferedReader( new InputStreamReader( System.in ) );
+        String input;
+        
+        do {
+            try {
+                input = br.readLine();
+                
+            } catch ( IOException ex ) {
+                throw new IllegalArgumentException( "Eingabevorgang abgebrochen!" );
+            }
+            
+        } while( ! input.matches( "[a-hA-H][1-2]" ) ); // Prüft ob der gegebene String passt
+        
+        return input;
+        
+        
+//        String koords = "  ";
+//        
+//        while ( ! koords.matches( "[a-hA-H][1-2]" ) ){
+//            koords = benutzerEingabe();
+//        }
+//        return koords;
     }
 
 }
