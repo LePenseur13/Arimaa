@@ -95,6 +95,15 @@ public class Arimaa {
         return input;
     }
     
+    /**
+     * lässt den spieler die Figuren,
+     * außer Kaninchen, auf den
+     * ersten beiden Reihen
+     * aufstellen
+     * 
+     * leere Felder werden mit
+     * Kaninchen aufgefüllt
+     */
     public void figurenSetzen(){
         //array mit allen Spielfiguren außer Kaninchen
         Spielfigur[] figuren = { new Spielfigur( "Gold", "Elefant" ),
@@ -111,10 +120,18 @@ public class Arimaa {
             System.out.print( figur.getTyp() + ": " );
             spielfeld.set( aufstellungsKoordsEingeben(), figur );
             System.out.println();
-            System.out.println(spielfeld.toString());
+            System.out.println( spielfeld.toString() );
         }
+        kaninchenAufstellen();
     }
     
+    /**
+     * liest solange von der Konsole ein, 
+     * bis eine passende Benutzereingabe erfolgt
+     * ==> Koordinate ( [a-hA-H][1-2] zB.: a1 )
+     * 
+     * @return 
+     */
     public String aufstellungsKoordsEingeben(){
         BufferedReader br = new BufferedReader( new InputStreamReader( System.in ) );
         String input;
@@ -130,14 +147,24 @@ public class Arimaa {
         } while( ! input.matches( "[a-hA-H][1-2]" ) ); // Prüft ob der gegebene String passt
         
         return input;
+    }
+    
+    /**
+     * füllt die leeren Felder
+     * mit Kaninchen auf
+     */
+    public void kaninchenAufstellen(){
+        Spielfigur spielfigur = new Spielfigur("Gold", "Kaninchen");
+        String[] sa = { "A", "B", "C", "D", "E", "F", "G", "H" };
         
-        
-//        String koords = "  ";
-//        
-//        while ( ! koords.matches( "[a-hA-H][1-2]" ) ){
-//            koords = benutzerEingabe();
-//        }
-//        return koords;
+        for ( int i = 1; i < 3; i++ ){
+            for ( String s : sa ){
+                s += i;
+                if ( spielfeld.get(s) == null ){
+                    spielfeld.set(s, spielfigur);
+                }
+            } 
+        }
     }
 
 }
