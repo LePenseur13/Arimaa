@@ -85,13 +85,14 @@ public class Arimaa {
             setWinning = 1;
             f = Farbe.Silber;
         }
+        return winning;
     }
     
     public Farbe game(){
         spielfeld = new Spielfeld();
         Farbe f = Farbe.Gold;
         int farbe = 0;
-        while (spielfeld.hasWon() == -1){
+        while (hasWon() == -1){
             zug(f);
             if (farbe == 0) {
                 farbe = 1;
@@ -101,7 +102,7 @@ public class Arimaa {
                 f = Farbe.Gold;
             }
         }
-        if (spielfeld.hasWon() == 1){
+        if (hasWon() == 1){
             f = Farbe.Gold;
         } else {
             f = Farbe.Silber;
