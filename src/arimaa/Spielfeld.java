@@ -14,7 +14,7 @@ import java.util.Arrays;
  */
 public class Spielfeld {
     // Attribute
-    final private Spielfigur[][] feld;
+    private Spielfigur[][] feld;
     
     //Konstruktoren
     public Spielfeld() {
@@ -76,7 +76,7 @@ public class Spielfeld {
      * @version 1.0
      */
     public void set( String koord, Spielfigur figur ) throws IndexOutOfBoundsException {
-        int[] koords = koordsValid( koord );
+        int[] koords = getValidKoords( koord );
         feld[ koords[ 0 ] ][ koords[ 1 ] ] = figur;
     }
     
@@ -90,7 +90,7 @@ public class Spielfeld {
      * @version 1.0
      */
     public Spielfigur get( String koord ) throws IndexOutOfBoundsException {
-        int[] koords = koordsValid( koord );
+        int[] koords = getValidKoords( koord );
         return feld[ koords[ 0 ] ][ koords[ 1 ] ];
     }
     
@@ -119,8 +119,8 @@ public class Spielfeld {
      * @version 1.0
      */
     public void flip( String koord1, String koord2 ) throws IndexOutOfBoundsException {
-        int[] koords1 = koordsValid( koord1 );
-        int[] koords2 = koordsValid( koord2 );
+        int[] koords1 = getValidKoords( koord1 );
+        int[] koords2 = getValidKoords( koord2 );
         
         // Tauschen mit Hilfsvariable (tmp)
         Spielfigur tmp = feld[ koords1[ 0 ] ][ koords1[ 1 ] ];
@@ -138,16 +138,42 @@ public class Spielfeld {
      * @author Alexander Holzinger
      * @version 1.0
      */
-    public int[] koordsValid( String koord ) throws IllegalArgumentException {
+    public int[] getValidKoords( String koord ) throws IllegalArgumentException {
         koord = koord.toUpperCase();
         
         // Überprüfung
-        if ( koord.matches( "[a-hA-H][1-8]" ) ) throw new IllegalArgumentException( "Ungültige Koordinaten!" );
+        if ( ! validKoord( koord ) ) throw new IllegalArgumentException( "Ungültige Koordinaten!" );
         
         // Buchstaben und Zahlen zu Indizes umformen
         int[] koords = new int[ 2 ];
         koords[ 0 ] = koord.charAt( 0 ) - 65;
         koords[ 1 ] = koord.charAt( 1 ) - 49;
         return koords;
+    }
+    
+    /**
+     * prüft ob die gegebene Koordinate gültig ist
+     * @param koord
+     * @return gültig?
+     */
+    public static boolean validKoord( String koord ) {
+        return koord.matches( "[a-hA-H][1-8]" );
+        
+    }
+    
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for ( int i = 7; i >= 0; i-- ) {
+        
+            for ( int j = 0; j < 8; j++ ) {
+                
+                sb.append( feld[ i ][ j ] + "  ");
+                
+            }
+            sb.append( "\n" );
+        }
+        
+        return sb.toString();
     }
 }
