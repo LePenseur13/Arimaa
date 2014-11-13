@@ -63,7 +63,7 @@ public class Spielfeld {
      * @version 1.0
      */
     public Spielfeld copy() {
-        return new Spielfeld(this.feld.clone());
+        return new Spielfeld( this.feld.clone() );
     }
     
     /**
@@ -168,7 +168,7 @@ public class Spielfeld {
         
             for ( int j = 0; j < 8; j++ ) {
                 
-                sb.append( feld[ i ][ j ] + "  ");
+                sb.append( feld[ j ][ i ] + "  ");
                 
             }
             sb.append( "\n" );
