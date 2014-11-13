@@ -457,4 +457,50 @@ public class Arimaa {
         
         return koords;
     }
+    
+    //Gerichtsverfahren
+    public void entferneFiguren(){
+        //Am Ende des Verfahrens wird entschieden, ob das Opfer für schuldig erklärt wird
+        //und aus dem öfffentlichen Lebe in eine Irrenanstalt für geistig behinderte
+        //eingeliefert wird.
+        boolean figurWirdEntfernt = true;
+        //Jede TodesStelle wird untersucht
+        for (String todesStelle : death){
+            Spielfigur opfer = spielfeld.get(todesStelle);
+            if (opfer != null){
+                //Das Opfer ist die erste Person die Aussagt
+                Farbe opferFarbe = opfer.getFarbe();
+                
+                //Zeugen werden ins Gericht geholt
+                int [] koords = spielfeld.getKoords(todesStelle);
+                Spielfigur oben = spielfeld.get(koords[0], koords[1]-1);
+                Spielfigur unten = spielfeld.get(koords[0], koords[1]+1);
+                Spielfigur rechts = spielfeld.get(koords[0]+1, koords[1]);
+                Spielfigur links = spielfeld.get(koords[0]-1, koords[1]);
+                
+                //Zeugen machen ihre Aussagen, es reicht wenn nur einer von ihnen 
+                //für das Opfer aussagt, und die Aussage das Opfer entlastet
+                //Zeuge 1
+                figurWirdEntfernt = ! (oben != null && opferFarbe.equals(oben.getFarbe()));
+                if (figurWirdEntfernt == true){
+                    figurWirdEntfernt = ! (oben != null && opferFarbe.equals(oben.getFarbe()));
+                }
+                //Zeuge 2
+                if (figurWirdEntfernt == true){
+                    figurWirdEntfernt = ! (unten != null && opferFarbe.equals(unten.getFarbe()));
+                }
+                //Zeuge 3
+                if (figurWirdEntfernt == true){
+                    figurWirdEntfernt = ! (rechts != null && opferFarbe.equals(rechts.getFarbe()));
+                }
+                //Zeuge 4
+                if (figurWirdEntfernt == true){
+                    figurWirdEntfernt = ! (links != null && opferFarbe.equals(links.getFarbe()));
+                }
+                if (figurWirdEntfernt){
+                    spielfeld.set(todesStelle, null);
+                }
+            }
+        }
+    }
 }
