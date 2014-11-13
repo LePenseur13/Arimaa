@@ -22,6 +22,7 @@ public class Arimaa {
 
     // Attribute
     private Spielfeld spielfeld;
+    final String[] death = { "c3", "f3", "c6", "f6" };
     
     //Konstruktoren
     public Arimaa() {
@@ -322,7 +323,7 @@ public class Arimaa {
             
             spielfeld.flip( startKoord, zielKoord); // Schritt Ausführung
             
-            // Fallenfelder - Methode
+            entferneFiguren();
             
             if( figur.getFarbe() == farbe ) {
                 lastStartKoord = startKoord;

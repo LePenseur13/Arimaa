@@ -94,6 +94,19 @@ public class Spielfeld {
         return feld[ koords[ 0 ] ][ koords[ 1 ] ];
     }
     
+    public int [] getKoords( String koord ) throws IndexOutOfBoundsException {
+        int[] koords = getValidKoords( koord );
+        return koords;
+    }
+    
+    public Spielfigur get( int [] koords ) throws IndexOutOfBoundsException {
+        return feld[ koords[ 0 ] ][ koords[ 1 ] ];
+    }
+    
+    public Spielfigur get( int x, int y ) throws IndexOutOfBoundsException {
+        return feld[ x ][ y ];
+    }
+    
     /**
      * Diese Methode löscht eine Figur an der Stelle koord
      * 
