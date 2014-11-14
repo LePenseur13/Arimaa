@@ -273,4 +273,33 @@ public class Spielfeld {
         
         return koords;
     }
+    
+    /**
+     * gibt alle gültigen Nachbarfiguren zurück
+     * @param koord
+     * @return Nachbarfiguren
+     */
+    public ArrayList<Spielfigur> getNeighbours( String koord ) {
+        
+        // Prüft ob Koordinate gültig ist
+        if( ! validKoord( koord ) ) {
+            throw new IllegalArgumentException( "Ungültige Koordinate!" );
+        }
+        
+        ArrayList<Spielfigur> neighbours = new ArrayList<>();
+        
+        ArrayList<String> neighbourKoords = getNeighbourKoords( koord );
+        
+        // Prüft alle Nachbarfelder auf vorhandene Figuren
+        for( String neighbourKoord : neighbourKoords ) {
+            
+            if( get( neighbourKoord ) != null ) {
+                
+                neighbours.add( get( neighbourKoord ) );
+            }
+        }
+        
+        return neighbours;
+        
+    }
 }
