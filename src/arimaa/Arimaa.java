@@ -37,7 +37,7 @@ public class Arimaa {
         Arimaa a = new Arimaa();
         System.out.println( a.spielfeld.toString() );
         a.spielfeld.set( "c5", new Spielfigur( "Gold", "Elefant" ) );
-        a.spielfeld.set( "b2", new Spielfigur( "Gold", "Kamel" ) );
+        //a.spielfeld.set( "b3", new Spielfigur( "Silber", "Kamel" ) );
         a.spielfeld.set( "d4", new Spielfigur( "Gold", "Kaninchen" ) );
         a.spielfeld.set( "c4", new Spielfigur( "Silber", "Kamel" ) );
         System.out.println( a.spielfeld.toString() );
@@ -56,6 +56,7 @@ public class Arimaa {
      * Ein vollständiger Zug, 4 Schritte und jeweils die Benutzereinabe
      * @param farbe
      */
+    /*
     public void zug( Farbe farbe ) {
         String startKoord;
         String zielKoord;
@@ -178,6 +179,7 @@ public class Arimaa {
             System.out.println( spielfeld.toString() );
         }
     }
+    */
     
     public void zug2( Farbe farbe ) {
         String startKoord;
@@ -215,7 +217,7 @@ public class Arimaa {
                 if( figur != null ) {
                     
                     // freies Nachbarfeld ?
-                    ArrayList<String> neighbourKoords = getNeighbourKoords( startKoord );
+                    ArrayList<String> neighbourKoords = Spielfeld.getNeighbourKoords( startKoord );
                     
                     for ( String koord : neighbourKoords ) {
 
@@ -227,7 +229,7 @@ public class Arimaa {
                         } else if( spielfeld.get( koord ).getFarbe() != farbe 
                                 && figur.getTyp().ordinal() > spielfeld.get( koord ).getTyp().ordinal() ){
                             
-                            ArrayList<String> neighbourKoords2 = getNeighbourKoords( koord );
+                            ArrayList<String> neighbourKoords2 = Spielfeld.getNeighbourKoords( koord );
                             
                             for( String koord2 : neighbourKoords2 ) {
                                 
@@ -263,7 +265,7 @@ public class Arimaa {
                             // d.h. wenn das ehemalige Feld der Figur 
                             // ein Nachbarfeld dieser Figur ist
                             // und wenn diese Figur schwächer ist
-                            if( isNeighbourKoord( startKoord, lastStartKoord ) 
+                            if( Spielfeld.isNeighbourKoord( startKoord, lastStartKoord ) 
                                     && figur.getTyp().ordinal() < lastStrenght ){
                                 zielKoords.clear();
                                 zielKoords.add( lastStartKoord ); // Zielfeld
@@ -293,7 +295,7 @@ public class Arimaa {
                     && spielfeld.get( zielKoord ).getFarbe() != farbe 
                     && figur.getTyp().ordinal() > spielfeld.get( zielKoord ).getTyp().ordinal() ) {
                     
-                    ArrayList<String> koords = getNeighbourKoords( zielKoord );
+                    ArrayList<String> koords = Spielfeld.getNeighbourKoords( zielKoord );
                     
                     for( String koord : koords ) {
                         
@@ -308,7 +310,7 @@ public class Arimaa {
                                 System.out.println( "Ziel( Figur des Gegners): " );
                                 zielKoordPush = benutzerEingabe( "[a-hA-H][1-8]");
                                 
-                            } while( ! isNeighbourKoord( zielKoord, zielKoordPush ) 
+                            } while( ! Spielfeld.isNeighbourKoord( zielKoord, zielKoordPush ) 
                                     && spielfeld.get( zielKoordPush) == null );
                             
                             spielfeld.flip( zielKoord, zielKoordPush ); // Push ausführen
@@ -391,73 +393,8 @@ public class Arimaa {
         return input;
     }
     
-    /**
-     * Prüft ob die zwei Koordinaten benachbart sind
-     * @param koord1
-     * @param koord2
-     * @return benachbart?
-     * @throws IllegalArgumentException 
-     */
-    private static boolean isNeighbourKoord( String koord1, String koord2 ) throws IllegalArgumentException{
-        
-        // Prüft ob Koordinaten gültig sind
-        if( ! Spielfeld.validKoord( koord1 ) || ! Spielfeld.validKoord( koord2 ) ) {
-            throw new IllegalArgumentException( "Ungültige Koordinaten!" );
-        }
-        
-        // Wenn in derselben Spalte, dann gleich 0 ( => a1 a2; |a - a| = 0 )
-        // Wenn in Nachbarspalten, dann gleich 1 ( => a1 b2; |a - b| = 1 )
-        int diff1 = abs( koord1.charAt( 0 ) - koord2.charAt( 0 ) );
-        int diff2 = abs( koord1.charAt( 1 ) - koord2.charAt( 1 ) );
-        
-        // Nachbarn sind zwei Felder, wenn sie entweder in gleichen Spalten 
-        // und in benachbarten Zeilen sind oder umgekehrt
-        return diff1 + diff2 == 1;
-    }
     
-    /**
-     * gibt alle Nachbarkoordinaten zurück
-     * @param koord
-     * @return Nachbarkoordinaten
-     * @throws IllegalArgumentException 
-     */
-    private static ArrayList<String> getNeighbourKoords( String koord ) throws IllegalArgumentException{
-        
-        // Prüft ob Koordinate gültig ist
-        if( ! Spielfeld.validKoord( koord ) ) {
-            throw new IllegalArgumentException( "Ungültige Koordinate!" );
-        }
-        
-        ArrayList<String> koords = new ArrayList<>();
-        String cache;
-        
-        // liker Nachbar
-        cache = Character.toString( (char) ( koord.charAt( 0 ) - 1 ) ) + Character.toString( koord.charAt( 1 ) );
-        if( Spielfeld.validKoord( cache ) ) {
-            koords.add( cache );
-        }
-        
-        // unterer Nachbar
-        cache = Character.toString( koord.charAt( 0 ) ) + Character.toString( (char) ( koord.charAt( 1 ) - 1 ) );
-        if( Spielfeld.validKoord( cache ) ) {
-            koords.add( cache );
-        }
-        
-        // rechter Nachbar
-        cache = Character.toString( (char) ( koord.charAt( 0 ) + 1 ) ) + Character.toString( koord.charAt( 1 ) );
-        if( Spielfeld.validKoord( cache ) ) {
-            koords.add( cache );
-        }
-        
-        
-       // oberer Nachbar
-        cache = Character.toString( koord.charAt( 0 ) ) + Character.toString( (char) ( koord.charAt( 1 ) + 1 ) );
-        if( Spielfeld.validKoord( cache ) ) {
-            koords.add( cache );
-        }
-        
-        return koords;
-    }
+    
     
     //Gerichtsverfahren
     public void entferneFiguren(){
@@ -466,7 +403,7 @@ public class Arimaa {
         //eingeliefert wird.
         boolean figurWirdEntfernt = true;
         //Jede TodesStelle wird untersucht
-        for (String todesStelle : death){
+        for ( String todesStelle : death ){
             Spielfigur opfer = spielfeld.get(todesStelle);
             if (opfer != null){
                 //Das Opfer ist die erste Person die Aussagt

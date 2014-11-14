@@ -13,8 +13,8 @@ package arimaa;
  */
 class Spielfigur {
     // Attribute
-    private Typ typ;
-    private Farbe farbe;
+    private final Typ typ;
+    private final Farbe farbe;
     
     //Konstruktoren
     /**
@@ -68,7 +68,7 @@ class Spielfigur {
      */
 
     public String toString() {
-        return farbe.name().substring( 0, 2) + " " + typ.ordinal();
+        return farbe.name().substring( 0, 1) + typ.ordinal();
     } 
     
     public Spielfigur getCopy() {

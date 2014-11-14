@@ -5,6 +5,8 @@
  */
 package arimaa;
 
+import static java.lang.Math.abs;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -177,16 +179,98 @@ public class Spielfeld {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for ( int i = 7; i >= 0; i-- ) {
         
+        
+        sb.append( "-----------------------------------------\n" );
+        for ( int i = 7; i >= 0; i-- ) {
+            
+            sb.append( "| " );
             for ( int j = 0; j < 8; j++ ) {
                 
-                sb.append( feld[ j ][ i ] + "  ");
+                if( feld[ j ][ i ] == null ) {
+                    
+                    sb.append( "   | " );
+                } else{
+                    
+                    sb.append( feld[ j ][ i ] + " | ");
+                }
                 
             }
             sb.append( "\n" );
+            
+            sb.append( "-----------------------------------------\n" );
         }
         
         return sb.toString();
+    }
+    
+    
+    /**
+     * Prüft ob die zwei Koordinaten benachbart sind
+     * @param koord1
+     * @param koord2
+     * @return benachbart?
+     * @throws IllegalArgumentException 
+     */
+    public static boolean isNeighbourKoord( String koord1, String koord2 ) throws IllegalArgumentException{
+        
+        // Prüft ob Koordinaten gültig sind
+        if( ! validKoord( koord1 ) || ! Spielfeld.validKoord( koord2 ) ) {
+            throw new IllegalArgumentException( "Ungültige Koordinaten!" );
+        }
+        
+        // Wenn in derselben Spalte, dann gleich 0 ( => a1 a2; |a - a| = 0 )
+        // Wenn in Nachbarspalten, dann gleich 1 ( => a1 b2; |a - b| = 1 )
+        int diff1 = abs( koord1.charAt( 0 ) - koord2.charAt( 0 ) );
+        int diff2 = abs( koord1.charAt( 1 ) - koord2.charAt( 1 ) );
+        
+        // Nachbarn sind zwei Felder, wenn sie entweder in gleichen Spalten 
+        // und in benachbarten Zeilen sind oder umgekehrt
+        return diff1 + diff2 == 1;
+    }
+    
+    
+    /**
+     * gibt alle Nachbarkoordinaten zurück
+     * @param koord
+     * @return Nachbarkoordinaten
+     * @throws IllegalArgumentException 
+     */
+    public static ArrayList<String> getNeighbourKoords( String koord ) throws IllegalArgumentException{
+        
+        // Prüft ob Koordinate gültig ist
+        if( ! validKoord( koord ) ) {
+            throw new IllegalArgumentException( "Ungültige Koordinate!" );
+        }
+        
+        ArrayList<String> koords = new ArrayList<>();
+        String cache;
+        
+        // liker Nachbar
+        cache = Character.toString( (char) ( koord.charAt( 0 ) - 1 ) ) + Character.toString( koord.charAt( 1 ) );
+        if( Spielfeld.validKoord( cache ) ) {
+            koords.add( cache );
+        }
+        
+        // unterer Nachbar
+        cache = Character.toString( koord.charAt( 0 ) ) + Character.toString( (char) ( koord.charAt( 1 ) - 1 ) );
+        if( Spielfeld.validKoord( cache ) ) {
+            koords.add( cache );
+        }
+        
+        // rechter Nachbar
+        cache = Character.toString( (char) ( koord.charAt( 0 ) + 1 ) ) + Character.toString( koord.charAt( 1 ) );
+        if( Spielfeld.validKoord( cache ) ) {
+            koords.add( cache );
+        }
+        
+        
+       // oberer Nachbar
+        cache = Character.toString( koord.charAt( 0 ) ) + Character.toString( (char) ( koord.charAt( 1 ) + 1 ) );
+        if( Spielfeld.validKoord( cache ) ) {
+            koords.add( cache );
+        }
+        
+        return koords;
     }
 }
