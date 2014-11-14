@@ -181,6 +181,11 @@ public class Arimaa {
     }
     */
     
+    /**
+     * ein vollständiger Zug bestehend aus 4 Schritten,
+     * der Benutzereingabe und allen Prüfungen
+     * @param farbe 
+     */
     public void zug2( Farbe farbe ) {
         String startKoord;
         String zielKoord;
@@ -375,6 +380,7 @@ public class Arimaa {
      * bis eine passende Benutzereingabe erfolgt
      * ==> regex
      *
+     * @param regex 
      * @return Benutzereingabe
      * @throws IllegalArgumentException
      */
@@ -399,6 +405,12 @@ public class Arimaa {
     
     
     //Gerichtsverfahren
+    /**
+     * Prüft alle Fallenfelder( c3, c6, f3, f6 )
+     * ob eine Figur auf dem jeweiligen Feld steht
+     * und ob sie durch eine gleichfarbige Figur gehalten wird
+     * falls nicht wird sie entfernt 
+     */
     public void entferneFiguren(){
         //Am Ende des Verfahrens wird entschieden, ob das Opfer für schuldig erklärt wird
         //und aus dem öfffentlichen Lebe in eine Irrenanstalt für geistig behinderte
