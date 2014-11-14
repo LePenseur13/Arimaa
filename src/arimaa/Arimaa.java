@@ -203,7 +203,9 @@ public class Arimaa {
                 startKoord = benutzerEingabe( "([a-hA-H][1-8])|end");
                 
                 // end beendet den Zug
-                if( startKoord.equals( "end" ) ) return; 
+                // Prüfung ob sich etwas geändert hat -> History
+                if( startKoord.equals( "end" ) 
+                        && schritt > 1 ) return; 
                 
                 figur = spielfeld.get( startKoord );
                 
@@ -285,7 +287,7 @@ public class Arimaa {
             // Ziel Koordinate
             do {
                 System.out.println( "Ziel: " );
-                zielKoord = benutzerEingabe( "[a-hA-H][1-8]");
+                zielKoord = benutzerEingabe();
                 
                 //Push
                 
@@ -308,7 +310,7 @@ public class Arimaa {
                             do {
                                 
                                 System.out.println( "Ziel( Figur des Gegners): " );
-                                zielKoordPush = benutzerEingabe( "[a-hA-H][1-8]");
+                                zielKoordPush = benutzerEingabe();
                                 
                             } while( ! Spielfeld.isNeighbourKoord( zielKoord, zielKoordPush ) 
                                     && spielfeld.get( zielKoordPush) == null );
@@ -376,7 +378,7 @@ public class Arimaa {
      * @return Benutzereingabe
      * @throws IllegalArgumentException
      */
-    private static String benutzerEingabe( String regex ) {
+    private static String benutzerEingabe( String regex ) throws IllegalArgumentException {
         BufferedReader br = new BufferedReader( new InputStreamReader( System.in ) );
         String input;
         
@@ -388,7 +390,7 @@ public class Arimaa {
                 throw new IllegalArgumentException( "Eingabevorgang abgebrochen!" );
             }
             
-        } while( ! input.matches( regex ) ); // Prüft ob der gegebene String eine gültige Koordinate ist
+        } while( ! input.matches( regex ) ); // Prüft ob der gegebene String dem regex entspricht
         
         return input;
     }
