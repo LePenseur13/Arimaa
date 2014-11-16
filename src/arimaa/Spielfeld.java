@@ -142,7 +142,7 @@ public class Spielfeld {
         koord = koord.toUpperCase();
         
         // Überprüfung
-        if ( koord.matches( "[a-hA-H][1-8]" ) ) throw new IllegalArgumentException( "Ungültige Koordinaten!" );
+        if (! koord.matches( "[a-hA-H][1-8]" ) ) throw new IllegalArgumentException( "Ungültige Koordinaten!" );
         
         // Buchstaben und Zahlen zu Indizes umformen
         int[] koords = new int[ 2 ];

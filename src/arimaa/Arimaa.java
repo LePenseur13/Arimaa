@@ -45,11 +45,11 @@ public class Arimaa {
     }
 
     // Methoden
-    
+    /*
     /**
      *
      * @param farbe
-     */
+     *//*
     public void zug( Farbe farbe ) {
         String startKoord;
         String zielKoord;
@@ -68,7 +68,7 @@ public class Arimaa {
             
             
         }
-    }
+    }*/
     
     /**
      * liest solange von der Konsole ein, 
