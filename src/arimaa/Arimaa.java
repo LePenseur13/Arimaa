@@ -21,32 +21,29 @@ public class Arimaa {
 
     // Attribute
     private Spielfeld spielfeld;
-    final String[] death = { "c3", "f3", "c6", "f6" };
+    
+    final String[] fallenFelder = { "c3", "f3", "c6", "f6" };
+    
+    private Farbe activePlayer;
     
     //Konstruktoren
     public Arimaa() {
         spielfeld = new Spielfeld();
+        activePlayer = Farbe.Gold;
     }
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        ///*
+        
         Arimaa a = new Arimaa();
-        System.out.println( a.spielfeld.toString() );
-        a.spielfeld.set( "c5", new Spielfigur( "Gold", "Elefant" ) );
-        //a.spielfeld.set( "b3", new Spielfigur( "Silber", "Kamel" ) );
-        a.spielfeld.set( "d4", new Spielfigur( "Gold", "Kaninchen" ) );
-        a.spielfeld.set( "c4", new Spielfigur( "Silber", "Kamel" ) );
-        System.out.println( a.spielfeld.toString() );
-        a.zug( Farbe.Gold );
-        //*/
-        /*
-        Farbe f1 = Farbe.valueOf( "Gold" );
-        Farbe f2 = Farbe.getValue( "Gold" );
-        System.out.println( f1 == f2 );
-        */
+        a.print();
+        a.figurenSetzen( "Gold" );
+        a.print();
+        a.figurenSetzen( "Silber" );
+        a.print();
+        System.out.println( a.game() );
     }
 
     // Methoden
@@ -64,11 +61,11 @@ public class Arimaa {
         String lastStartKoord = "";
         int lastStrenght = -1;
         
-        ArrayList<String> zielKoords;
+        ArrayList<String> zielKoords = new ArrayList<>();;
         
-        boolean valid;
+        boolean valid = false;
         
-        Spielfigur figur;
+        Spielfigur figur = null;
         
         for ( int schritt = 1; schritt <= 4; schritt++ ) {
             
@@ -82,10 +79,12 @@ public class Arimaa {
                 if( startKoord.equals( "end" ) 
                         && schritt > 1 ) return; 
                 
+                if( startKoord.equals( "end" ) ) continue;
+                
                 figur = spielfeld.get( startKoord );
                 
                 valid = false;
-                zielKoords = new ArrayList<>();
+                zielKoords.clear();
                 
                 boolean festgehalten = false;
                 boolean beschuetzt = false;
@@ -202,7 +201,7 @@ public class Arimaa {
             
             spielfeld.flip( startKoord, zielKoord); // Schritt Ausführung
             
-            entferneFiguren();
+            fallenFelderCheck();
             
             if( figur.getFarbe() == farbe ) {
                 lastStartKoord = startKoord;
@@ -281,7 +280,8 @@ public class Arimaa {
      * und ob sie durch eine gleichfarbige Figur gehalten wird
      * falls nicht wird sie entfernt 
      */
-    public void entferneFiguren(){
+    public void fallenFelderCheck(){
+        
         //Am Ende des Verfahrens wird entschieden, ob das Opfer für schuldig erklärt wird
         //und aus dem öfffentlichen Lebe in eine Irrenanstalt für geistig behinderte
         //eingeliefert wird.
@@ -289,9 +289,9 @@ public class Arimaa {
         boolean schuldig = true;
         
         //Jede TodesStelle wird untersucht
-        for ( String todesStelle : death ){
+        for ( String todesStelle : fallenFelder ){
             
-            Spielfigur opfer = spielfeld.get(todesStelle);
+            Spielfigur opfer = spielfeld.get( todesStelle );
             
             if ( opfer != null ){
                 
@@ -350,9 +350,19 @@ public class Arimaa {
                                  new Spielfigur( farbe, "Katze" )
                                 };
         
+        String regex;
+        
+        if( farbe.equals( "Gold" ) ) {
+            
+            regex = "[a-hA-H][1-2]";
+        } else {
+            
+            regex = "[a-hA-H][7-8]";
+        }
+        
         for ( Spielfigur figur : figuren ){            
             System.out.print( figur.getTyp() + ": " );
-            spielfeld.set( benutzerEingabe( "[a-hA-H][1-2]" ), figur );
+            spielfeld.set( benutzerEingabe( regex ), figur );
             System.out.println();
             System.out.println( spielfeld.toString() );
         }
@@ -369,13 +379,106 @@ public class Arimaa {
         Spielfigur kaninchen = new Spielfigur( farbe, "Kaninchen" );
         String[] sa = { "A", "B", "C", "D", "E", "F", "G", "H" };
         
-        for ( int i = 1; i <= 2; i++ ){
+        int i;
+        int end;
+        
+        if( farbe.equals( "Gold" ) ) {
+            
+            i = 1;
+            end = 2;
+        } else {
+            
+            i = 7;
+            end = 8;
+        }
+        
+        for ( ; i <= end; i++ ){
             for ( String s : sa ){
                 s += i;
                 if ( spielfeld.get(s) == null ){
                     spielfeld.set(s, kaninchen);
                 }
             } 
+        }
+    }
+    
+    /**
+     * gibt die Frabe des Gewinners zurück
+     * Im Falle eines noch nicht entschiedenen Spiels wird null zurückgegeben
+     * @return Gewinner
+     */
+    public Farbe gewinner(){
+        
+        Farbe farbe = Farbe.Gold;
+        
+        // Prüft ob sich in der letzten Reihe 
+        // ein goldenes Kaninchen befindet
+        for( int i = 0; i < 8; i++ ) {
+            
+            Spielfigur figur = spielfeld.get( 7, i);
+            
+            if( figur != null && figur.getFarbe().equals( farbe ) && figur.getTyp().equals( Typ.Kaninchen ) ) {
+                
+                return farbe;
+            }
+        }
+        
+        farbe = Farbe.Silber;
+        
+        // Prüft ob sich in der ersten Reihe 
+        // ein silbernes Kaninchen befindet
+        for( int i = 0; i < 8; i++ ) {
+            
+            Spielfigur figur = spielfeld.get( 0, i);
+            
+            if( figur != null && figur.getFarbe().equals( farbe ) && figur.getTyp().equals( Typ.Kaninchen ) ) {
+                
+                return farbe;
+            }
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Spielablauf
+     * @return Gewinner
+     */
+    public Farbe game(){
+        
+        Farbe gewinner;
+        
+        do {
+            zug( activePlayer );
+            
+            gewinner = gewinner();
+            
+            changeActivePlayer();
+            
+        } while( gewinner.equals( null ) );
+        
+        return gewinner;
+    }
+    
+    /**
+     * gibt das Spielfeld aus
+     */
+    public void print() {
+        
+        System.out.println( spielfeld.toString() );
+    }
+    
+    /**
+     * wechselt den Spieler
+     */
+    private void changeActivePlayer() {
+        
+        if( activePlayer.equals( Farbe.Gold) ) {
+            
+            activePlayer = Farbe.Silber;
+        } else {
+            
+            activePlayer = Farbe.Gold;
         }
     }
 }
