@@ -9,7 +9,6 @@ package arimaa;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import static java.lang.Math.abs;
 import java.util.ArrayList;
 
 
@@ -41,7 +40,7 @@ public class Arimaa {
         a.spielfeld.set( "d4", new Spielfigur( "Gold", "Kaninchen" ) );
         a.spielfeld.set( "c4", new Spielfigur( "Silber", "Kamel" ) );
         System.out.println( a.spielfeld.toString() );
-        a.zug2( Farbe.Gold );
+        a.zug( Farbe.Gold );
         //*/
         /*
         Farbe f1 = Farbe.valueOf( "Gold" );
@@ -57,7 +56,7 @@ public class Arimaa {
      * der Benutzereingabe und allen Prüfungen
      * @param farbe 
      */
-    public void zug2( Farbe farbe ) {
+    public void zug( Farbe farbe ) {
         String startKoord;
         String zielKoord;
         String zielKoordPush;
@@ -319,6 +318,64 @@ public class Arimaa {
                     spielfeld.set(todesStelle, null);
                 }
             }
+        }
+    }
+    
+    /**
+     * lässt den spieler die Figuren,
+     * außer Kaninchen, auf den
+     * ersten beiden Reihen
+     * aufstellen
+     * 
+     * leere Felder werden mit
+     * Kaninchen aufgefüllt
+     * 
+     * @param farbe
+     */
+    public void figurenSetzen( String farbe ){
+        
+        // prüft ob eine gültige Farbe
+        if( ! farbe.equals( "Gold" ) && ! farbe.equals( "Silber" ) ) {
+            
+            throw new IllegalArgumentException( "Keine gültige Farbe!" );
+        }
+        //array mit allen Spielfiguren außer Kaninchen
+        Spielfigur[] figuren = { new Spielfigur( farbe, "Elefant" ),
+                                 new Spielfigur( farbe, "Kamel" ),
+                                 new Spielfigur( farbe, "Pferd" ),
+                                 new Spielfigur( farbe, "Pferd" ),
+                                 new Spielfigur( farbe, "Hund" ),
+                                 new Spielfigur( farbe, "Hund" ),
+                                 new Spielfigur( farbe, "Katze" ),
+                                 new Spielfigur( farbe, "Katze" )
+                                };
+        
+        for ( Spielfigur figur : figuren ){            
+            System.out.print( figur.getTyp() + ": " );
+            spielfeld.set( benutzerEingabe( "[a-hA-H][1-2]" ), figur );
+            System.out.println();
+            System.out.println( spielfeld.toString() );
+        }
+        kaninchenAufstellen( farbe );
+    }
+    
+    /**
+     * füllt die leeren Felder
+     * mit Kaninch
+     * 
+     * @param farbe
+     */
+    public void kaninchenAufstellen( String farbe ){
+        Spielfigur kaninchen = new Spielfigur( farbe, "Kaninchen" );
+        String[] sa = { "A", "B", "C", "D", "E", "F", "G", "H" };
+        
+        for ( int i = 1; i <= 2; i++ ){
+            for ( String s : sa ){
+                s += i;
+                if ( spielfeld.get(s) == null ){
+                    spielfeld.set(s, kaninchen);
+                }
+            } 
         }
     }
 }
