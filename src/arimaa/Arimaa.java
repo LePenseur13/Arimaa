@@ -36,7 +36,6 @@ public class Arimaa {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        
         Arimaa a = new Arimaa();
         a.print();
         a.figurenSetzen( "Gold" );
@@ -76,10 +75,12 @@ public class Arimaa {
                 
                 // end beendet den Zug
                 // Prüfung ob sich etwas geändert hat -> History
-                if( startKoord.equals( "end" ) 
-                        && schritt > 1 ) return; 
-                
-                if( startKoord.equals( "end" ) ) continue;
+                if( startKoord.equals( "end" ) ) {
+                    
+                    if( schritt > 1 ) return;
+                    
+                    else continue;
+                }
                 
                 figur = spielfeld.get( startKoord );
                 
@@ -415,7 +416,7 @@ public class Arimaa {
         // ein goldenes Kaninchen befindet
         for( int i = 0; i < 8; i++ ) {
             
-            Spielfigur figur = spielfeld.get( 7, i);
+            Spielfigur figur = spielfeld.get( i, 7);
             
             if( figur != null && figur.getFarbe().equals( farbe ) && figur.getTyp().equals( Typ.Kaninchen ) ) {
                 
@@ -429,7 +430,7 @@ public class Arimaa {
         // ein silbernes Kaninchen befindet
         for( int i = 0; i < 8; i++ ) {
             
-            Spielfigur figur = spielfeld.get( 0, i);
+            Spielfigur figur = spielfeld.get( i, 0);
             
             if( figur != null && figur.getFarbe().equals( farbe ) && figur.getTyp().equals( Typ.Kaninchen ) ) {
                 
@@ -449,13 +450,14 @@ public class Arimaa {
         Farbe gewinner;
         
         do {
+            System.out.println( activePlayer );
             zug( activePlayer );
             
             gewinner = gewinner();
             
             changeActivePlayer();
             
-        } while( gewinner.equals( null ) );
+        } while( gewinner == null );
         
         return gewinner;
     }
