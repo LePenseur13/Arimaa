@@ -15,7 +15,6 @@ import java.util.ArrayList;
 /**
  *
  * @author JosefChristoph, Marcus Gabler
-
  */
 public class Arimaa {
 
