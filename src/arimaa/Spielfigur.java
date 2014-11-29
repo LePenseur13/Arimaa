@@ -11,7 +11,7 @@ package arimaa;
  * @author Alexander Holzinger
  * @version 1.1
  */
-class Spielfigur {
+public class Spielfigur {
     // Attribute
     private final Typ typ;
     private final Farbe farbe;
