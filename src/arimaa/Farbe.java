@@ -11,5 +11,5 @@ package arimaa;
  * @version 1.1
  */
 public enum Farbe {
-    Silber, Gold;
+    Silber, Gold; 
 }
