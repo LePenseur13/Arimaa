@@ -5,17 +5,18 @@
  */
 package gui;
 
+import arimaa.Arimaa;
+import arimaa.Farbe;
 import arimaa.Spielfeld;
 import arimaa.Spielfigur;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.GridLayout;
-import java.awt.Image;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -25,11 +26,22 @@ public class spielfeld extends javax.swing.JPanel {
 
     int SIZE = 9;
     FeldPanel[][] chessboard;
+    
     //Spielfeldvariablen
     Color koords = Color.WHITE;
     Color gold = new Color(212, 154, 78);
     Color silber = Color.white;
     
+    String path = "C:\\Users\\Marcus\\Documents\\GitHub\\Arimaa\\src\\icons\\";
+    
+    //Eingabevariablen
+    boolean setzeFiguren = true;
+    String[] typen = {"Elefant", "Kamel", "Pferd", "Hund", "Katze", "Kaninchen"};
+    String[] typenSetzen = {"Elefant", "Kamel", "Pferd", "Pferd", "Hund", "Hund", "Katze", "Katze"};
+    Farbe farbeTypSetzen;
+    int currentTyp = 0;
+    
+    Arimaa arimaa;
     Spielfeld spielfeld;
 
     /**
@@ -38,12 +50,18 @@ public class spielfeld extends javax.swing.JPanel {
     public spielfeld() {
         initComponents();
         setBackground(Color.white);
-        this.spielfeld = new Spielfeld();
-        spielfeld.set("B2", new Spielfigur("Gold", "Elefant"));
-        spielfeld.set("B3", new Spielfigur("Gold", "Katze"));
-        spielfeld.set("B4", new Spielfigur("Gold", "Kamel"));
-        spielfeld.set("B5", new Spielfigur("Gold", "Hund"));
+        //this.spielfeld = new Spielfeld();
+        arimaa = new Arimaa();
+        //arimaa.kaninchenAufstellen("Silber");
+        //arimaa.kaninchenAufstellen("Gold");
+        arimaa.print();
+        spielfeld = arimaa.getSpielFeld();
+        /*spielfeld.set("A1", new Spielfigur("Gold", "Elefant"));
+        spielfeld.set("A2", new Spielfigur("Gold", "Katze"));
+        spielfeld.set("B1", new Spielfigur("Gold", "Kamel"));
+        spielfeld.set("B2", new Spielfigur("Gold", "Hund"));*/
         repaint();
+        //startGame();
     }
 
     public void generiereFeld(Graphics g) {
@@ -56,14 +74,15 @@ public class spielfeld extends javax.swing.JPanel {
                 FeldPanel current = chessboard[i][j];
                 current.setBorder(BorderFactory.createLineBorder(Color.black));
                 current.setLayout(new FlowLayout(1));
+                setKoords(current, j-1, i-1);
                 if (i == 0) {
                     if (j != 0) {
-                        current.add(new JLabel(Integer.toString(j)));
+                        current.add(new JLabel(Character.toString(c)));
+                        c++;
                     }
-                    current.setBackground(koords);
+                    current.setBackground(Color.BLACK);
                 } else if (j == 0) {
-                    current.add(new JLabel(Character.toString(c)));
-                    c++;
+                    current.add(new JLabel(Integer.toString(i)));
                     current.setBackground(koords);
                 } else {
                     if (((i + j) % 2) == 0) {
@@ -75,33 +94,46 @@ public class spielfeld extends javax.swing.JPanel {
                     }
                 }
                 current.setSize(50, 50);
-                //Icon wird eingefügt
-                
-                if (i > 0 && j > 0 && i < 8 && j < 8) {
-                    if (spielfeld.get(i, j) != null) {
-                        printIcon(g, current, spielfeld, i, j);
+                if (i > 0 && j > 0 && i <= 8 && j <= 8) {
+                    if (spielfeld.get(j-1, i-1) != null) {
+                        //spielfeld.get(j-1, i-1) != null
+                        printIcon(g, current, j-1, i-1);
                     }
                 }
                 add(current);
+                //printKoords(current);
             }  
         }
     }
 
-    public void printIcon(Graphics g, FeldPanel current, Spielfeld spielfeld, int i, int j) {
-        String path = "C:\\Users\\Marcus\\Documents\\GitHub\\Arimaa\\src\\icons\\";
+    public void printIcon(Graphics g, FeldPanel current, int i, int j) {
         Spielfigur sf = spielfeld.get(i, j);
-        String[] typen = {"Elefant", "Kamel", "Pferd", "Hund", "Katze"};
+        String[] typen = {"Elefant", "Kamel", "Pferd", "Hund", "Katze", "Kaninchen"};
         for (String typ : typen) {
             if (sf.compareTo(new Spielfigur("Gold", typ)) == 0) {
-                //ImageIcon im = new ImageIcon(path + "Elefant" + "Gold" + ".png");
-                //Image image = im.getImage();
-                //current.icon = image;
-                //current.repaint();
-                JLabel jl = new JLabel(new ImageIcon(path + typ + sf.getFarbe().toString() + ".png"));
-                current.add(jl);
+                setzeFigur(current, typ, sf.getFarbe().toString(), i, j);
                 break;
             }
         }
+        
+    }
+    
+    public void setKoords(FeldPanel current, int x, int y){
+        current.x = x;
+        current.y = y;
+    }
+    
+    public void printKoords(FeldPanel current){
+        current.add(new JLabel("x: " + current.x + ", y:" + current.y));
+    }
+
+    public void setzeFigur(FeldPanel current, String typ, String farbe, int x, int y) {
+        ImageIcon icon = new ImageIcon(path + typ + farbe + ".png");
+        JLabel jl = new JLabel(icon);
+        current.empty = false;
+        current.x = x;
+        current.y = y;
+        current.add(jl);
     }
 
     protected void paintComponent(Graphics g) {
@@ -109,6 +141,10 @@ public class spielfeld extends javax.swing.JPanel {
         generiereFeld(g);
     }
     
+    public void startGame(){
+        farbeTypSetzen = Farbe.Gold;
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -117,6 +153,12 @@ public class spielfeld extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+
+        addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                formMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -130,6 +172,61 @@ public class spielfeld extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    
+    private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
+        int x = evt.getX();
+        int y = evt.getY();
+        FeldPanel fp = (FeldPanel) getComponentAt(x, y);
+        if (setzeFiguren){
+            if (currentTyp > 7){
+                if (farbeTypSetzen == Farbe.Silber){
+                    setzeFiguren = false;
+                } else {
+                    currentTyp = 0;
+                    farbeTypSetzen = Farbe.Silber;
+                    setzeFigurenAction(fp);
+                }
+            } else {
+                setzeFigurenAction(fp);
+            }
+        }
+    }//GEN-LAST:event_formMouseClicked
+
+    public void setzeFigurenAction(FeldPanel fp){
+        boolean gueltig = true;
+        if (fp.empty){
+            if (farbeTypSetzen == Farbe.Gold){
+                
+                if (fp.y != 0 && fp.y != 1){
+                    gueltig = false;
+                }
+            } else if (farbeTypSetzen == Farbe.Silber) {
+                if (fp.y != 6 && fp.y != 7){
+                    gueltig = false;
+                }
+            }
+        } else {
+            gueltig = false;
+        }
+        if (gueltig){
+            String f;
+            if (farbeTypSetzen == Farbe.Gold){
+                f = "Gold";
+            } else if (farbeTypSetzen == Farbe.Silber){
+                f = "Silber";
+            } else {
+                f = "Gold";
+            }
+            //if (farbeTypSetzen == Farbe.Silber)
+            spielfeld.set(fp.x, fp.y, new Spielfigur(f, typenSetzen[currentTyp]));
+            fp.empty = false;
+            
+            currentTyp++;
+            repaint();
+            arimaa.print();
+        }
+    }
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables

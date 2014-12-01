@@ -73,6 +73,5 @@ public class Spielfigur {
     
     public Spielfigur getCopy() {
         return new Spielfigur( farbe.toString(), typ.toString() );
-
     }
 }

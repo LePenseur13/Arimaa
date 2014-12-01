@@ -8,8 +8,6 @@ package gui;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.Graphics2D;
 
 /**
  *
@@ -17,8 +15,11 @@ import java.awt.Graphics2D;
  */
 public class FeldPanel extends javax.swing.JPanel {
 
-    Image icon;
     Color background;
+    boolean empty = true;
+    int x;
+    int y;
+    
     /**
      * Creates new form FeldPanel
      */
@@ -28,9 +29,6 @@ public class FeldPanel extends javax.swing.JPanel {
     
     protected void paintComponent(Graphics g){
         super.paintComponent(g);
-        Graphics2D g2 = (Graphics2D) g;
-        //g.drawImage(icon, getX(), getX(), this);
-        g2.drawImage(icon, getX(), getY(), 50, 50, this);
         setBackground(background);
     }
 

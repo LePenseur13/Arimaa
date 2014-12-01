@@ -383,11 +383,9 @@ public class Arimaa {
         int end;
         
         if( farbe.equals( "Gold" ) ) {
-            
             i = 1;
             end = 2;
         } else {
-            
             i = 7;
             end = 8;
         }
@@ -398,7 +396,7 @@ public class Arimaa {
                 if ( spielfeld.get(s) == null ){
                     spielfeld.set(s, kaninchen);
                 }
-            } 
+            }
         }
     }
     
@@ -481,5 +479,9 @@ public class Arimaa {
             
             activePlayer = Farbe.Gold;
         }
+    }
+    
+    public Spielfeld getSpielFeld(){
+        return spielfeld;
     }
 }

@@ -8,6 +8,7 @@ package gui;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Toolkit;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -45,9 +46,14 @@ public class ArimaaGUI extends javax.swing.JFrame {
         this.setBackground(Color.white);
         jPanel3.setBackground(Color.white);
         setResizable(false);
-        setMaximumSize(new Dimension(700, 543));
-        setMinimumSize(new Dimension(700, 543));
+        Toolkit tk = Toolkit.getDefaultToolkit();  
+        int xSize = ((int) tk.getScreenSize().getWidth());  
+        int ySize = ((int) tk.getScreenSize().getHeight());
+        //setMaximumSize(new Dimension(700, 543));
+        //setMinimumSize(new Dimension(700, 543));
+        setSize(xSize, ySize);
         spielLäuft = false;
+        spielfeld1.setSize(ySize, ySize);
     }
 
     /**

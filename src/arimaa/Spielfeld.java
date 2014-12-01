@@ -8,6 +8,7 @@ package arimaa;
 import static java.lang.Math.abs;
 import java.util.ArrayList;
 import java.util.Arrays;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -79,7 +80,12 @@ public class Spielfeld {
      */
     public void set( String koord, Spielfigur figur ) throws IndexOutOfBoundsException {
         int[] koords = getValidKoords( koord );
+        //JOptionPane.showMessageDialog(null, koords[ 1 ]);
         feld[ koords[ 0 ] ][ koords[ 1 ] ] = figur;
+    }
+    
+    public void set( int x, int y, Spielfigur figur ) throws IndexOutOfBoundsException {
+        feld[ x ][ y ] = figur;
     }
     
     /**
