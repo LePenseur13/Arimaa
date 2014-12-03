@@ -225,12 +225,24 @@ public class spielfeld extends javax.swing.JPanel {
             } else {
                 f = "Gold";
             }
-            
+            /*
             spielfeld.set(fp.x, fp.y, new Spielfigur(f, typenSetzen[currentTyp]));
             JOptionPane.showMessageDialog(fp, spielfeld.get(fp.x, fp.y).getTyp());
+            
+            
             currentTyp++;
             arimaa.print();
             generiereFeld(null);
+            */
+            spielfeld.set(fp.x, fp.y, new Spielfigur(f, typenSetzen[currentTyp]));
+            //JOptionPane.showMessageDialog(fp, spielfeld.get(fp.x, fp.y).getTyp());
+            currentTyp++;
+            //repaint();
+            printIcon(null, chessboard[fp.y+1][fp.x+1], fp.x, fp.y);
+            chessboard[fp.y+1][fp.x+1].updateUI();
+            arimaa.print();
+            //updateUI();
+            //generiereFeld(null);
         }
     }
     
