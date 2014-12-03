@@ -225,6 +225,7 @@ public class spielfeld extends javax.swing.JPanel {
             } else {
                 f = "Gold";
             }
+            
             /*
             spielfeld.set(fp.x, fp.y, new Spielfigur(f, typenSetzen[currentTyp]));
             JOptionPane.showMessageDialog(fp, spielfeld.get(fp.x, fp.y).getTyp());
