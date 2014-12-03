@@ -166,7 +166,7 @@ public class ArimaaGUI extends javax.swing.JFrame {
     
     private void neuesSpiel(){
         spielLäuft = true;
-        spielfeld1.repaint();
+        spielfeld1.generiereFeld(null);
         //arimaa = new Arimaa();
         //guiFigurenSetzen("Gold");
         //guiFigurenSetzen("Silber");

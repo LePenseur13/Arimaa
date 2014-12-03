@@ -32,7 +32,7 @@ public class spielfeld extends javax.swing.JPanel {
     Color gold = new Color(212, 154, 78);
     Color silber = Color.white;
     
-    String path = "C:\\Users\\Marcus\\Documents\\GitHub\\Arimaa\\src\\icons\\";
+    String path = "C:\\Users\\JosefChristoph\\Documents\\GitHub\\Arimaa\\src\\icons\\";
     
     //Eingabevariablen
     boolean setzeFiguren = true;
@@ -60,7 +60,7 @@ public class spielfeld extends javax.swing.JPanel {
         spielfeld.set("A2", new Spielfigur("Gold", "Katze"));
         spielfeld.set("B1", new Spielfigur("Gold", "Kamel"));
         spielfeld.set("B2", new Spielfigur("Gold", "Hund"));
-        repaint();
+        //repaint();
         startGame();
     }
 
@@ -141,7 +141,7 @@ public class spielfeld extends javax.swing.JPanel {
 
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        generiereFeld(g);
+        //generiereFeld(g);
     }
     
     public void startGame(){
