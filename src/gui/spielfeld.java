@@ -56,12 +56,12 @@ public class spielfeld extends javax.swing.JPanel {
         //arimaa.kaninchenAufstellen("Gold");
         arimaa.print();
         spielfeld = arimaa.getSpielFeld();
-        /*spielfeld.set("A1", new Spielfigur("Gold", "Elefant"));
+        spielfeld.set("A1", new Spielfigur("Gold", "Elefant"));
         spielfeld.set("A2", new Spielfigur("Gold", "Katze"));
         spielfeld.set("B1", new Spielfigur("Gold", "Kamel"));
-        spielfeld.set("B2", new Spielfigur("Gold", "Hund"));*/
+        spielfeld.set("B2", new Spielfigur("Gold", "Hund"));
         repaint();
-        //startGame();
+        startGame();
     }
 
     public void generiereFeld(Graphics g) {
@@ -95,15 +95,19 @@ public class spielfeld extends javax.swing.JPanel {
                 }
                 current.setSize(50, 50);
                 if (i > 0 && j > 0 && i <= 8 && j <= 8) {
+                    arimaa.print();
                     if (spielfeld.get(j-1, i-1) != null) {
                         //spielfeld.get(j-1, i-1) != null
                         printIcon(g, current, j-1, i-1);
+                    } else {
+                        current.add(new JLabel(current.x + ", " + current.y));
                     }
                 }
                 add(current);
                 //printKoords(current);
             }  
         }
+        //updateUI();
     }
 
     public void printIcon(Graphics g, FeldPanel current, int i, int j) {
@@ -114,8 +118,7 @@ public class spielfeld extends javax.swing.JPanel {
                 setzeFigur(current, typ, sf.getFarbe().toString(), i, j);
                 break;
             }
-        }
-        
+        } 
     }
     
     public void setKoords(FeldPanel current, int x, int y){
@@ -177,6 +180,12 @@ public class spielfeld extends javax.swing.JPanel {
         int x = evt.getX();
         int y = evt.getY();
         FeldPanel fp = (FeldPanel) getComponentAt(x, y);
+        /*fp.removeAll();
+        fp.add(new JLabel(new ImageIcon(path+"ElefantGold.png")));
+        validate();*/
+        
+        //String data = String.format("Empty: %s, %s", fp.empty, spielfeld.get(fp.y, fp.x));
+        //JOptionPane.showMessageDialog(fp, data);
         if (setzeFiguren){
             if (currentTyp > 7){
                 if (farbeTypSetzen == Farbe.Silber){
@@ -196,7 +205,6 @@ public class spielfeld extends javax.swing.JPanel {
         boolean gueltig = true;
         if (fp.empty){
             if (farbeTypSetzen == Farbe.Gold){
-                
                 if (fp.y != 0 && fp.y != 1){
                     gueltig = false;
                 }
@@ -217,13 +225,12 @@ public class spielfeld extends javax.swing.JPanel {
             } else {
                 f = "Gold";
             }
-            //if (farbeTypSetzen == Farbe.Silber)
-            spielfeld.set(fp.x, fp.y, new Spielfigur(f, typenSetzen[currentTyp]));
-            fp.empty = false;
             
+            spielfeld.set(fp.x, fp.y, new Spielfigur(f, typenSetzen[currentTyp]));
+            JOptionPane.showMessageDialog(fp, spielfeld.get(fp.x, fp.y).getTyp());
             currentTyp++;
-            repaint();
             arimaa.print();
+            generiereFeld(null);
         }
     }
     
