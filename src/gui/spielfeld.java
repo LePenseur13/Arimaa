@@ -31,15 +31,24 @@ public class spielfeld extends javax.swing.JPanel {
     Color koords = Color.WHITE;
     Color gold = new Color(212, 154, 78);
     Color silber = Color.white;
-    
+    String[] typen = {"Elefant", "Kamel", "Pferd", "Hund", "Katze", "Kaninchen"};
     String path = "C:\\Users\\JosefChristoph\\Documents\\GitHub\\Arimaa\\src\\icons\\";
     
     //Eingabevariablen
+    //Alle Phasen
+    FeldPanel panelPressed;
+    
+    //Phase 1
     boolean setzeFiguren = true;
-    String[] typen = {"Elefant", "Kamel", "Pferd", "Hund", "Katze", "Kaninchen"};
     String[] typenSetzen = {"Elefant", "Kamel", "Pferd", "Pferd", "Hund", "Hund", "Katze", "Katze"};
     Farbe farbeTypSetzen;
     int currentTyp = 0;
+    
+    //Phase 2
+    boolean verschiebeFiguren = false;
+    
+    
+    
     
     Arimaa arimaa;
     Spielfeld spielfeld;
@@ -179,37 +188,47 @@ public class spielfeld extends javax.swing.JPanel {
     private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
         int x = evt.getX();
         int y = evt.getY();
-        FeldPanel fp = (FeldPanel) getComponentAt(x, y);
-        /*fp.removeAll();
-        fp.add(new JLabel(new ImageIcon(path+"ElefantGold.png")));
-        validate();*/
-        
-        //String data = String.format("Empty: %s, %s", fp.empty, spielfeld.get(fp.y, fp.x));
-        //JOptionPane.showMessageDialog(fp, data);
+        panelPressed = (FeldPanel) getComponentAt(x, y);
+        bestimmePhase();
+    }//GEN-LAST:event_formMouseClicked
+
+    public void bestimmePhase(){
         if (setzeFiguren){
-            if (currentTyp > 7){
+            phaseFigurenSetzen();
+        } else if (verschiebeFiguren){
+            phaseFigurenVerschieben();
+        }
+    }
+    
+    public void phaseFigurenVerschieben(){
+        
+    }
+    
+    public void phaseFigurenSetzen(){
+        if (currentTyp > 7){
                 if (farbeTypSetzen == Farbe.Silber){
                     setzeFiguren = false;
+                    verschiebeFiguren = true;
                 } else {
                     currentTyp = 0;
                     farbeTypSetzen = Farbe.Silber;
-                    setzeFigurenAction(fp);
+                    setzeFigurenAction();
                 }
             } else {
-                setzeFigurenAction(fp);
+                setzeFigurenAction();
             }
-        }
-    }//GEN-LAST:event_formMouseClicked
-
-    public void setzeFigurenAction(FeldPanel fp){
+    }
+    
+    public void setzeFigurenAction(){
+        
         boolean gueltig = true;
-        if (fp.empty){
+        if (panelPressed.empty){
             if (farbeTypSetzen == Farbe.Gold){
-                if (fp.y != 0 && fp.y != 1){
+                if (panelPressed.y != 0 && panelPressed.y != 1){
                     gueltig = false;
                 }
             } else if (farbeTypSetzen == Farbe.Silber) {
-                if (fp.y != 6 && fp.y != 7){
+                if (panelPressed.y != 6 && panelPressed.y != 7){
                     gueltig = false;
                 }
             }
@@ -235,6 +254,9 @@ public class spielfeld extends javax.swing.JPanel {
             arimaa.print();
             generiereFeld(null);
             */
+            
+            //Damit code nicht zu lang wird
+            FeldPanel fp = panelPressed;
             spielfeld.set(fp.x, fp.y, new Spielfigur(f, typenSetzen[currentTyp]));
             //JOptionPane.showMessageDialog(fp, spielfeld.get(fp.x, fp.y).getTyp());
             currentTyp++;
