@@ -76,6 +76,8 @@ public class Arimaa2 {
             // Im Falle des 
             spielfeld.flip( startX, startY, zielX, zielY );
             
+            deleteKoords();
+            
             // Anzeigen
             guiReferenz.generiereFeld( spielfeld );
             
