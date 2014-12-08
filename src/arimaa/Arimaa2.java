@@ -135,7 +135,7 @@ public class Arimaa2 {
      */
     public boolean aufstellenFertig() {
         
-        boolean valid= checkAufstellenFertig();
+        boolean valid = checkAufstellenFertig();
         
         if( valid ) {
             
