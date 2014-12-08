@@ -17,6 +17,7 @@ public class Spielfigur {
     private final Farbe farbe;
     
     //Konstruktoren
+    
     /**
      * 
      * @param farbe
@@ -25,6 +26,11 @@ public class Spielfigur {
     public Spielfigur( String farbe, String typ ) {
         this.farbe = Farbe.valueOf( farbe );
         this.typ = Typ.valueOf( typ );
+    }
+    
+    public Spielfigur( Farbe farbe, Typ typ ) {
+        this.farbe = farbe;
+        this.typ = typ;
     }
     
     //Methoden
