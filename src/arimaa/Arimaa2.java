@@ -15,7 +15,7 @@ public class Arimaa2 {
     private Spielfeld spielfeld;
     private int schritt;
     private Farbe activePlayer;
-    //private Spielfigur cache;
+    private Spielfigur cache;
     private Spielphase spielphase;
     
     private Integer startX;
@@ -33,10 +33,68 @@ public class Arimaa2 {
     }
     
     /**
-     * Prüft alle Koordinaten während der 1. Phase (Aufstellung)
+     * Schnittstelle für die GUI
+     * @param x
+     * @param y
      * @return ob gültig
      */
-    private boolean checkAufstellung( int x, int y ) {
+    public boolean setKords( int x, int y ) {
+        boolean validity;
+        if( spielphase.equals( Spielphase.Aufstellen ) ) {
+            // ------ Aufstellen -----
+            
+            validity = checkKoordsAufstellung( x, y );
+        
+        } else {
+            // ------ Game -----
+            
+            validity = checkKoordsGame( x, y );
+            
+            // Ausnahmefall Schieben
+            // d.h. Ziel gesetzt und Ziel ist eine Figur
+            if( zielX != null && spielfeld.get( zielX, zielY ) != null ) {
+                
+                // Figur speichern
+                cache = spielfeld.get( zielX, zielY );
+                
+                // Figur vom spielfeld nehmen
+                spielfeld.set( zielX, zielY, null );
+                
+                // Schritt ausführen
+                spielfeld.flip( startX, startY, zielX, zielY );
+                
+                // !!!!!!!!!!!!
+                // anzeigen GUI
+                // !!!!!!!!!!!!
+                
+                deleteKoords();
+            }
+        }
+        
+        // Ziel - Koord gegeben -> Schritt ausführen
+        if( zielX != null ) {
+            
+            // Im Falle des 
+            spielfeld.flip( startX, startY, zielX, zielY );
+            
+            // !!!!!!!!!!!!
+            // anzeigen GUI
+            // !!!!!!!!!!!!
+            
+        }
+        
+        return validity;
+    }   
+    
+    // -------------------------------------------------------------------------
+    // ------------------ Aufstellung ------------------------------------------
+    // -------------------------------------------------------------------------
+    
+    /**
+     * Prüft alle Koordinaten während der 1.Phase (Aufstellung)
+     * @return ob gültig
+     */
+    private boolean checkKoordsAufstellung( int x, int y ) {
         
         boolean validity = true;
         
@@ -96,20 +154,6 @@ public class Arimaa2 {
     }
     
     /**
-     * wechselt den Spieler
-     */
-    private void changeActivePlayer() {
-        
-        if( activePlayer.equals( Farbe.Gold) ) {
-            
-            activePlayer = Farbe.Silber;
-        } else {
-            
-            activePlayer = Farbe.Gold;
-        }
-    }
-    
-    /**
      * füllt die leeren Felder
      * mit Kaninch
      * 
@@ -135,5 +179,41 @@ public class Arimaa2 {
                 }
             }
         }
+    }
+    
+    // -------------------------------------------------------------------------
+    // ------------------------- Game ------------------------------------------
+    // -------------------------------------------------------------------------
+    
+    private boolean checkKoordsGame( int x, int y ) {
+        boolean validity = true;
+        
+        return validity; 
+    
+    }
+    
+    /**
+     * wechselt den Spieler
+     */
+    private void changeActivePlayer() {
+        
+        if( activePlayer.equals( Farbe.Gold) ) {
+            
+            activePlayer = Farbe.Silber;
+        } else {
+            
+            activePlayer = Farbe.Gold;
+        }
+    }
+    
+    /**
+     * setzt alle gespeicherten Koordinaten zurück
+     */
+    private void deleteKoords() {
+        startX = null;
+        startY = null;
+        zielX = null;
+        zielY = null;
+        
     }
 }

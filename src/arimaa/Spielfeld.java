@@ -150,6 +150,21 @@ public class Spielfeld {
     }
     
     /**
+     * Tauscht Spielfiguren aus
+     * @param startX
+     * @param startY
+     * @param zielX
+     * @param zielY
+     */
+    public void flip( int startX, int startY, int zielX, int zielY ) {
+        
+        // Tauschen mit Hilfsvariable (tmp)
+        Spielfigur tmp = feld[ startX ][ zielY ];
+        feld[ startX ][ startY ] = feld[ zielX ][ zielY ];
+        feld[ zielX ][ zielY ] = tmp;
+    }
+    
+    /**
      * Diese Methode gibt die Koordinaten im X-/Y-Format zurück (z.B.: 5 / 7), welches direkt mit
      * der Implementierung des Arrays kompatibel ist
      * 
