@@ -188,6 +188,10 @@ public class Arimaa2 {
         return validity; 
     
     }
+
+    public Spielfigur getCache() {
+        return cache;
+    }
     
     /**
      * wechselt den Spieler
@@ -213,4 +217,6 @@ public class Arimaa2 {
         zielY = null;
         
     }
+    
+    
 }
