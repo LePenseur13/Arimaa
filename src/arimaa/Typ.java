@@ -10,7 +10,7 @@ package arimaa;
  * @author JosefChristoph, Alexander Holzinger
  * @version 1.0
  */
-enum Typ {
+public enum Typ {
     Kaninchen, Katze, Hund, Pferd, Kamel, Elefant;
 
     
