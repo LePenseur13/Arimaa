@@ -130,24 +130,66 @@ public class Arimaa2 {
      * restliche Kaninchen aufstellen
      * eventuell die 2.Phase einleiten
      * anzeigen in der GUI aufrufen
+     * 
+     * @return valid
      */
-    public void aufstellenFertig() {
+    public boolean aufstellenFertig() {
         
-        // restliche Kaninchen aufstellen
-        kaninchenAufstellen( activePlayer );
+        boolean valid= checkAufstellenFertig();
         
-        // Anzeigen
-        guiReferenz.generiereFeld( spielfeld );
-        
-        // Falls auch Silber fertig ist beginnt Phase 2 Spielen
-        if( activePlayer.equals( Farbe.Silber ) ) {
+        if( valid ) {
             
-            spielphase = Spielphase.Spielen;
+            // restliche Kaninchen aufstellen
+            kaninchenAufstellen( activePlayer );
+        
+            // Anzeigen
+            guiReferenz.generiereFeld( spielfeld );
+        
+            // Falls auch Silber fertig ist beginnt Phase 2 Spielen
+            if( activePlayer.equals( Farbe.Silber ) ) {
+            
+                spielphase = Spielphase.Spielen;
+            }
+        
+            // In jedem Fall ist nur der andere Spieler an der Reihe
+            changeActivePlayer();
+        
         }
         
-        // In jedem Fall ist nur der andere Spieler an der Reihe
-        changeActivePlayer();
+        return valid;
         
+    }
+    
+    /**
+     * Prüft ob fertig aufgestellt wurde
+     * d.h auf den ersten bzw letzten 2 Reihen
+     * d.h auf der 3 bzw 6 Reihe keine Figuren
+     * @return validity
+     */
+    private boolean checkAufstellenFertig() {
+        
+        boolean validity = true;
+        
+        int y;
+        if( activePlayer.equals( Farbe.Gold ) ) {
+            
+            y = 2;
+        } else {
+            
+            y = 5;
+        }
+        
+        for ( int x = 0; x < 8; x++  ){
+            
+            // Falls dort eine Figur sein sollte 
+            if( spielfeld.get( x, y ) != null ) {
+                
+                validity = false;
+                break;
+            }
+        }
+        
+        return validity;
     }
     
     /**
@@ -156,18 +198,18 @@ public class Arimaa2 {
      * 
      * @param farbe
      */
-    public void kaninchenAufstellen( Farbe farbe ){
+    private void kaninchenAufstellen( Farbe farbe ){
         Spielfigur kaninchen = new Spielfigur( farbe, Typ.Kaninchen );
         int[] range;
         
         if( farbe.equals( Farbe.Gold ) ) {
             range = new int[]{0, 1};
         } else {
-            range = new int[]{7, 8};
+            range = new int[]{6, 7};
         }
         
-        for ( int x : range ){
-            for ( int y = 0; y < 8; y++ ){
+        for ( int x = 0; x < 8; x++ ){
+            for ( int y : range ){
                 
                 // Falls leer mit Kaninchen befüllen
                 if ( spielfeld.get( x, y ) == null ){
