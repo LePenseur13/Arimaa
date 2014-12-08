@@ -17,6 +17,8 @@ public class FeldPanel extends javax.swing.JPanel {
 
     Color background;
     boolean empty = true;
+    String typ;
+    String farbe;
     int x;
     int y;
     

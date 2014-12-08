@@ -63,9 +63,8 @@ public class Arimaa2 {
                 // Schritt ausführen
                 spielfeld.flip( startX, startY, zielX, zielY );
                 
-                // !!!!!!!!!!!!
-                // anzeigen GUI
-                // !!!!!!!!!!!!
+                // Anzeigen
+                guiReferenz.generiereFeld( spielfeld );
                 
                 deleteKoords();
             }
@@ -77,9 +76,8 @@ public class Arimaa2 {
             // Im Falle des 
             spielfeld.flip( startX, startY, zielX, zielY );
             
-            // !!!!!!!!!!!!
-            // anzeigen GUI
-            // !!!!!!!!!!!!
+            // Anzeigen
+            guiReferenz.generiereFeld( spielfeld );
             
         }
         
@@ -130,7 +128,7 @@ public class Arimaa2 {
      * Wenn ein Spieler mit dem Aufstellen fertig ist
      * Spieler wechseln 
      * restliche Kaninchen aufstellen
-     * eventuell die 2. Phase einleiten
+     * eventuell die 2.Phase einleiten
      * anzeigen in der GUI aufrufen
      */
     public void aufstellenFertig() {
@@ -138,9 +136,8 @@ public class Arimaa2 {
         // restliche Kaninchen aufstellen
         kaninchenAufstellen( activePlayer );
         
-        // !!!!!!!!!!!!
-        // anzeigen GUI
-        // !!!!!!!!!!!!
+        // Anzeigen
+        guiReferenz.generiereFeld( spielfeld );
         
         // Falls auch Silber fertig ist beginnt Phase 2 Spielen
         if( activePlayer.equals( Farbe.Silber ) ) {
