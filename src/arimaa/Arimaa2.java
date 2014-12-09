@@ -117,8 +117,7 @@ public class Arimaa2 {
             }
             
             case Spielen: {
-                //valid = checkKoordsGame( koord );
-                valid = true;
+                valid = checkKoordsGame( koord );
                 if( valid ) {
                     
                     setKoord( koord );
@@ -416,7 +415,7 @@ public class Arimaa2 {
             
             // Zielkoordinate 
             
-            // falls koord ´ eine mögliche Zielkoordinate is
+            // falls koord eine mögliche Zielkoordinate ist
             valid = zielKoords.contains( koord );
             
         }
