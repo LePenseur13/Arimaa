@@ -22,7 +22,7 @@ public class Arimaa2 {
     // -------------------------- Attribute ------------------------------------
     // -------------------------------------------------------------------------
     
-    private Spielfeld spielfeld;
+    public Spielfeld spielfeld;
     
     private Spielphase spielphase;
     private Farbe activePlayer;
