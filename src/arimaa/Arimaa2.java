@@ -6,9 +6,6 @@
 package arimaa;
 
 import gui.spielfeld;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Stack;
 
@@ -57,7 +54,7 @@ public class Arimaa2 {
         figurenAufsBrett();
         
         // Anzeigen
-        //guiReferenz.generiereFeld( spielfeld );
+        //guiReferenz.generiereFeldUpdate( spielfeld );
         print();
     }
     
@@ -78,7 +75,7 @@ public class Arimaa2 {
             System.out.println( a.activePlayer );
             
             try{
-                a.setKords( new Koord( Arimaa2.benutzerEingabe() ) );
+                //a.setKords( new Koord( Arimaa2.benutzerEingabe() ) );
             } catch( IllegalArgumentException e ){
                 // Do nothing
             }
@@ -700,6 +697,10 @@ public class Arimaa2 {
         } 
     }
     
+    /**
+     * zählt den Schritt hoch
+     * 
+     */
     private void nextSchritt() {
         
         // Falls dies schon der 4. Schritt war
@@ -717,22 +718,37 @@ public class Arimaa2 {
     }
     
     /**
+     * Falls jemand gewonnen hat wird das der GUI mitgeteilt
      * wechselt den Spieler
      * und fügt spielfeld zur history hinzu
      */
     private void changeActivePlayer() {
         
-        if( activePlayer.equals( Farbe.Gold) ) {
+        Farbe gewinner;
+        gewinner = gewinner();
+        
+        // Falls jemand gewonnen hat
+        if( gewinner != null ) {
             
-            activePlayer = Farbe.Silber;
+            guiReferenz.spielendeErreicht( gewinner );
+
         } else {
             
-            activePlayer = Farbe.Gold;
+            // Wechselt Spieler
+            if( activePlayer.equals( Farbe.Gold ) ) {
+            
+                activePlayer = Farbe.Silber;
+            } else {
+            
+                activePlayer = Farbe.Gold;
+            }
+            
         }
         
         history.addEntry( spielfeld );
         
     }
+    
     
     /**
      * gibt die Frabe des Gewinners zurück
@@ -808,25 +824,4 @@ public class Arimaa2 {
         System.out.println( spielfeld.toString() );
     }
     
-    /**
-     * liest solange von der Konsole ein, 
-     * bis eine passende Benutzereingabe erfolgt
-     * ==> Koordinate ( [a-hA-H][1-8] zB.: a1 )
-     *
-     * @return Benutzereingabe( Koordinate )
-     * @throws IllegalArgumentException
-     */
-    private static String benutzerEingabe() throws IllegalArgumentException {
-        BufferedReader br = new BufferedReader( new InputStreamReader( System.in ) );
-        String input;
-        
-        try {
-            input = br.readLine();
-                
-        } catch ( IOException ex ) {
-             throw new IllegalArgumentException( "Eingabevorgang abgebrochen!" );
-        }
-        
-        return input;
-    }
 }
