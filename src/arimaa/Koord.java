@@ -15,14 +15,14 @@ public class Koord {
     // -------------------------- Attribute ------------------------------------
     // -------------------------------------------------------------------------
     
-    public int x;
-    public int y;
+    public final int x;
+    public final int y;
     
     // -------------------------------------------------------------------------
     // ---------------------- Konstruktoren ------------------------------------
     // -------------------------------------------------------------------------
     
-    public Koord( int x, int y ) {
+    public Koord( int x, int y ) throws IllegalArgumentException {
         // Falls Koordinate ungültig ist wird eine Exception geworfen
         if( ! Koord.valid( x, y ) ) throw new IllegalArgumentException( "Ungültige Koordinaten!" );
         
@@ -30,7 +30,7 @@ public class Koord {
         this.y = y;
     }
     
-    public Koord( String koord ) {
+    public Koord( String koord ) throws IllegalArgumentException {
         // Falls Koordinate ungültig ist wird eine Exception geworfen
         if( ! valid( koord ) ) throw new IllegalArgumentException( "Ungültige Koordinaten!" );
         

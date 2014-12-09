@@ -52,7 +52,7 @@ public class Arimaa2 {
         figurenAufsBrett();
         
         // Anzeigen
-            //guiReferenz.generiereFeld( spielfeld );
+        //guiReferenz.generiereFeld( spielfeld );
         print();
     }
     
