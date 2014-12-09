@@ -9,6 +9,7 @@ package arimaa;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Stack;
 
 /**
@@ -28,10 +29,13 @@ public class Arimaa2 {
     private int schritt;
 
     private Spielfigur cache;
+    private History history;
 
     
     private Koord start;
     private Koord ziel;
+    
+    ArrayList<Koord> zielKoords;
     
     //private final spielfeld guiReferenz;
     
@@ -48,6 +52,7 @@ public class Arimaa2 {
         activePlayer = Farbe.Gold;
         schritt = 1;
         
+        history = new History( spielfeld );
         
         figurenAufsBrett();
         
@@ -187,7 +192,7 @@ public class Arimaa2 {
      * 
      * @return valid
      */
-    public boolean aufstellenFertig() {
+    private boolean aufstellenFertig() {
         
         boolean valid = checkAufstellenFertig();
         
@@ -327,9 +332,130 @@ public class Arimaa2 {
         return validity; 
     
     }
-
+    
+    private boolean schrittFertig() {
+        
+        return true;
+    }
+    
+    private boolean checkSchrittFertig() {
+        
+        return true;
+    }
+    
+    /**
+     * ermittelt die jeweiligen Zielkoordinaten für die 
+     * Startkoordinate koord
+     * @param koord
+     * @return zielKoords
+     */
+    private ArrayList<Koord> getZielKoords( Koord koord ) {
+        ArrayList<Koord> zielKoords = new ArrayList<>();
+        
+        Spielfigur figur = spielfeld.get( koord );
+        
+        // Es muss eine Figur zum Ziehen da sein
+        if( figur == null ) return zielKoords;
+        
+        // Je nachdem ob es eine eigene oder eine fremde Figur ist 
+        // eigene Figur
+        if( figur.getFarbe().equals( activePlayer ) ) {
+            
+            
+            
+        } else {
+            
+            // fremde Figur
+            // d.h. Pull
+            if( isPullable( koord ) ) {
+                
+                // der Ausgangspunkt der letzten Figur 
+                // muss das Ziel von dieser sein
+                zielKoords.add( history.getLetzteStartKoord() );
+                
+            }
+            
+        }
+        
+        
+        return zielKoords;
+    }
+    
+    /**
+     * Prüft ob die gegebene Koordinate eine Figur 
+     * enthält, die man hinter der letztgezogenen Figur 
+     * nachziehen kann
+     * @param koord
+     * @return 
+     */
+    private boolean isPullable( Koord koord ) {
+        
+        // falls koord ein Nachbarfeld von der letzten startKoord 
+        boolean neighbour = Spielfeld.isNeighbourKoord( koord, history.getLetzteStartKoord() );
+        
+        // AND
+        // falls die Figur schwächer als die zuletztgezogene Figur ist
+        boolean weaker = history.getZuletztgezogeneFigur().isStronger( spielfeld.get( koord ) );
+        
+        return neighbour && weaker;
+        
+    }
+    
+    /**
+     * Ermitelt ob eine Figur überhaupt fahren darf
+     * d.h. ob sie festgehlten wird 
+     * @return isMoveable
+     */
+    private boolean isMoveable( Koord koord ) {
+        
+        ArrayList<Koord> neighbourKoords = Spielfeld.getNeighbourKoords( koord );
+        
+        Spielfigur figur = spielfeld.get( koord );
+        
+        boolean festgehalten = false;
+        boolean beschuetzt = false;
+        
+        for( Koord neighbourKoord : neighbourKoords ) {
+            
+            if( spielfeld.get( neighbourKoord ).getFarbe() != activePlayer 
+                && spielfeld.get( neighbourKoord ).isStronger( figur ) ) {
+                            
+                festgehalten = true; 
+                            
+            } else if( spielfeld.get( neighbourKoord ).getFarbe() == figur.getFarbe() ){
+                
+                beschuetzt = true;
+                
+            }   
+            
+        }
+        
+        
+        return ! ( festgehalten && ! beschuetzt );
+    }
+    
     public Spielfigur getCache() {
         return cache;
+    }
+    
+    /**
+     * Ruft je nachdem in welcher Phase man ist 
+     * die zugehörige Methode auf
+     * @return ob wircklich fertig
+     */
+    public boolean fertig() {
+        
+        // Aufstellen
+        
+        if( spielphase.equals( Spielphase.Aufstellen ) ) {
+            
+            return aufstellenFertig();
+        
+        }
+        
+        // Schritt
+        return schrittFertig();
+
     }
     
     /**
@@ -357,11 +483,16 @@ public class Arimaa2 {
                 // d.h. wenn auf ziel eine Figur steht
                 if( spielfeld.get( ziel ) != null ) {
                 
-                    // Figur wird vomSpielfeld genommen
+                    // Figur wird vom Spielfeld genommen
                     cache = spielfeld.del( ziel );
                     
                 }
-            
+                
+                // eintrag in History 
+                history.setLetzteStartKoord( start );
+                history.setZuletztgezogeneFigur( spielfeld.get( start ) );
+                
+                
                 // zählt dern Schritt hoch
                 nextSchritt();
                 
