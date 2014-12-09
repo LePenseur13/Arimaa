@@ -6,6 +6,9 @@
 package arimaa;
 
 import gui.spielfeld;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 /**
  *
@@ -13,10 +16,12 @@ import gui.spielfeld;
  */
 public class Arimaa2 {
     private Spielfeld spielfeld;
-    private int schritt;
-    private Farbe activePlayer;
-    private Spielfigur cache;
     private Spielphase spielphase;
+    private Farbe activePlayer;
+    private int schritt;
+
+    private Spielfigur cache;
+
     
     private Integer startX;
     private Integer startY;
@@ -30,6 +35,20 @@ public class Arimaa2 {
     
     public Arimaa2( spielfeld spielfeld ) {
         guiReferenz = spielfeld;
+        this.spielfeld = new Spielfeld();
+        
+        spielphase = Spielphase.Aufstellen;
+        
+        activePlayer = Farbe.Gold;
+        schritt = 1;
+    }
+    
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        Arimaa2 a = new Arimaa2(null);
+        
     }
     
     /**
@@ -252,6 +271,44 @@ public class Arimaa2 {
     }
     
     /**
+     * gibt die Frabe des Gewinners zurück
+     * Im Falle eines noch nicht entschiedenen Spiels wird null zurückgegeben
+     * @return Gewinner
+     */
+    public Farbe gewinner(){
+        
+        Farbe farbe = Farbe.Gold;
+        
+        // Prüft ob sich in der letzten Reihe 
+        // ein goldenes Kaninchen befindet
+        for( int i = 0; i < 8; i++ ) {
+            
+            Spielfigur figur = spielfeld.get( i, 7);
+            
+            if( figur != null && figur.getFarbe().equals( farbe ) && figur.getTyp().equals( Typ.Kaninchen ) ) {
+                
+                return farbe;
+            }
+        }
+        
+        farbe = Farbe.Silber;
+        
+        // Prüft ob sich in der ersten Reihe 
+        // ein silbernes Kaninchen befindet
+        for( int i = 0; i < 8; i++ ) {
+            
+            Spielfigur figur = spielfeld.get( i, 0);
+            
+            if( figur != null && figur.getFarbe().equals( farbe ) && figur.getTyp().equals( Typ.Kaninchen ) ) {
+                
+                return farbe;
+            }
+        }
+        
+        return null;
+    }
+    
+    /**
      * setzt alle gespeicherten Koordinaten zurück
      */
     private void deleteKoords() {
@@ -262,5 +319,36 @@ public class Arimaa2 {
         
     }
     
+    /**
+     * gibt das Spielfeld aus
+     */
+    public void print() {
+        
+        System.out.println( spielfeld.toString() );
+    }
     
+    /**
+     * liest solange von der Konsole ein, 
+     * bis eine passende Benutzereingabe erfolgt
+     * ==> Koordinate ( [a-hA-H][1-8] zB.: a1 )
+     *
+     * @return Benutzereingabe( Koordinate )
+     * @throws IllegalArgumentException
+     */
+    private static String benutzerEingabe() throws IllegalArgumentException {
+        BufferedReader br = new BufferedReader( new InputStreamReader( System.in ) );
+        String input;
+        
+        do {
+            try {
+                input = br.readLine();
+                
+            } catch ( IOException ex ) {
+                throw new IllegalArgumentException( "Eingabevorgang abgebrochen!" );
+            }
+            
+        } while( ! Spielfeld.validKoord( input ) ); // Prüft ob der gegebene String eine gültige Koordinate ist
+        
+        return input;
+    }
 }

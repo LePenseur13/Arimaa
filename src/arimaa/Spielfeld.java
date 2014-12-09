@@ -8,7 +8,6 @@ package arimaa;
 import static java.lang.Math.abs;
 import java.util.ArrayList;
 import java.util.Arrays;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -16,10 +15,17 @@ import javax.swing.JOptionPane;
  * @version 1.0
  */
 public class Spielfeld {
-    // Attribute
+    
+    // -------------------------------------------------------------------------
+    // -------------------------- Attribute ------------------------------------
+    // -------------------------------------------------------------------------
+    
     private Spielfigur[][] feld;
     
-    //Konstruktoren
+    // -------------------------------------------------------------------------
+    // ---------------------- Konstruktoren ------------------------------------
+    // -------------------------------------------------------------------------
+    
     public Spielfeld() {
         feld = new Spielfigur[ 8 ][ 8 ];
     }
@@ -28,7 +34,195 @@ public class Spielfeld {
         this.feld = Feld;
     }
     
-    // Methoden
+    
+    
+    // -------------------------------------------------------------------------
+    // --------------------------- METHODEN ------------------------------------
+    // -------------------------------------------------------------------------
+    
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        Spielfeld s = new Spielfeld();
+        System.out.println( s );
+        s.set( new Koord( 0, 1 ), new Spielfigur( Farbe.Silber, Typ.Katze ) );
+        System.out.println( s );
+        Spielfeld s1 = s.copy();
+        s1.del( new Koord( 0, 1 ) );
+        System.out.println( s1 );
+        System.out.println( s );
+    }
+    
+    // -------------------------------------------------------------------------
+    // ------------------- GET, SET, DELETE ------------------------------------
+    // -------------------------------------------------------------------------
+    
+    /**
+     * EIne Spielfigur wird an der Koordinate koord platziert 
+     * @param koord
+     * @param figur 
+     */
+    public void set( Koord koord, Spielfigur figur ) {
+        feld[ koord.x ] [ koord.y ] = figur;
+    }
+    
+    /**
+     * giebt die Figur auf der jeweiligen Koordinate zurück
+     * @param koord
+     * @return Spielfigur
+     */
+    public Spielfigur get( Koord koord ) {
+        return feld[ koord.x ][ koord.y ];
+    }
+    
+    /**
+     * Löscht Figur auf der jeweiligen Koordinate
+     * @param koord
+     * @return gelöschte Figur
+     */
+    public Spielfigur del( Koord koord ) {
+        Spielfigur tmp = get( koord );
+        set( koord, null );
+        return tmp;
+    }
+    
+    // -------------------------------------------------------------------------
+    // ------------------- FLIP, FIGURENANZAHL ------------------------------------
+    // -------------------------------------------------------------------------
+    
+    /**
+     * Diese Methode tauscht zwei Spielfiguren an den Koordinaten koord1 und koord2
+     * @param koord1
+     * @param koord2 
+     */
+    public void flip( Koord koord1, Koord koord2 )  {
+
+        // Tauschen mit Hilfsvariable (tmp)
+        Spielfigur tmp = feld[ koord1.x ][ koord1.y ];
+        feld[ koord1.x ][ koord1.y ] = feld[ koord2.x ][ koord2.y ];
+        feld[ koord2.x][ koord2.y ] = tmp;
+        
+    }
+    
+    
+    /**
+     * 
+     * @return Anzahl der Figuren des Felds
+     * @author Alexander Holzinger
+     * @version 1.0
+     */
+    public int getFigurenAnzahl() {
+        int Figures = 0;
+        for ( Spielfigur[] reihe: feld ) {
+            for ( Spielfigur sf: reihe ) {
+                if ( sf != null) {
+                    Figures++;
+                }
+            }
+        }
+        return Figures;
+    }
+    
+    // -------------------------------------------------------------------------
+    // --------------------------- NEIGHBOURs ----------------------------------
+    // -------------------------------------------------------------------------
+    
+    /**
+     * Prüft ob die zwei Koordinaten benachbart sind
+     * @param koord1
+     * @param koord2
+     * @return benachbart?
+     */
+    public static boolean isNeighbourKoord( Koord koord1, Koord koord2 ) {
+        
+        
+        // Wenn in derselben Spalte, dann gleich 0 ( => a1 a2; |a - a| = 0 )
+        // Wenn in Nachbarspalten, dann gleich 1 ( => a1 b2; |a - b| = 1 )
+        int diff1 = abs( koord1.x - koord2.x );
+        int diff2 = abs( koord1.y - koord2.y );
+        
+        // Nachbarn sind zwei Felder, wenn sie entweder in gleichen Spalten 
+        // und in benachbarten Zeilen sind oder umgekehrt
+        return diff1 + diff2 == 1;
+        
+    }
+    
+    
+    /**
+     * gibt alle Nachbarkoordinaten zurück
+     * @param koord
+     * @return Nachbarkoordinaten
+     */
+    public static ArrayList<Koord> getNeighbourKoords( Koord koord ) {
+        
+        ArrayList<Koord> koords = new ArrayList<>();
+        Koord cache;
+        
+        // linker Nachbar
+        try {
+            koords.add( new Koord( koord.x - 1, koord.y ) );
+            
+        } catch( IllegalArgumentException e ) {
+            // Nothing happends
+        }
+        
+        // unterer Nachbar
+        try {
+            koords.add( new Koord( koord.x, koord.y - 1 ) );
+            
+        } catch( IllegalArgumentException e ) {
+            // Nothing happends
+        }
+        
+        // rechter Nachbar
+        try {
+            koords.add( new Koord( koord.x + 1, koord.y ) );
+            
+        } catch( IllegalArgumentException e ) {
+            // Nothing happends
+        }
+        
+        
+       // oberer Nachbar
+        try {
+            koords.add( new Koord( koord.x, koord.y + 1 ) );
+            
+        } catch( IllegalArgumentException e ) {
+            // Nothing happends
+        }
+        
+        return koords;
+    }
+    
+    /**
+     * gibt alle gültigen Nachbarfiguren zurück
+     * @param koord
+     * @return Nachbarfiguren
+     */
+    public ArrayList<Spielfigur> getNeighbours( Koord koord ) {
+        
+        ArrayList<Spielfigur> neighbours = new ArrayList<>();
+        
+        ArrayList<Koord> neighbourKoords = getNeighbourKoords( koord );
+        
+        // Prüft alle Nachbarfelder auf vorhandene Figuren
+        for( Koord neighbourKoord : neighbourKoords ) {
+            
+            if( get( neighbourKoord ) != null ) {
+                
+                neighbours.add( get( neighbourKoord ) );
+            }
+        }
+        
+        return neighbours;
+        
+    }
+    
+    // -------------------------------------------------------------------------
+    // ------------------- EQUALS, COPY, TOSTRING -------------------------------
+    // -------------------------------------------------------------------------
+    
     /**
      *
      * @param AnderesFeld Feld mit dem verglichen wird
@@ -43,158 +237,12 @@ public class Spielfeld {
     
     /**
      * 
-     * @return Anzahl der Figuren des Felds
-     * @author Alexander Holzinger
-     * @version 1.0
-     */
-    public int getNumberFiguren() {
-        int Figures = 0;
-        for ( Spielfigur[] reihe: feld ) {
-            for ( Spielfigur sf: reihe ) {
-                if ( sf != null) {
-                    Figures++;
-                }
-            }
-        }
-        return Figures;
-    }
-    
-    /**
-     * 
      * @return Kopie des  Spielfelds
      * @author Alexander Holzinger
      * @version 1.0
      */
     public Spielfeld copy() {
         return new Spielfeld( this.feld.clone() );
-    }
-    
-    /**
-     * Diese Methode setzt eine Spielfigur figur an die Stelle koord 
-     * 
-     * @param koord Koordinaten auf die die Spielfiguren gesetzt wird
-     * @param figur Figur, die auf die Koordinaten gesetzt werden
-     * @throws IndexOutOfBoundsException
-     * @author Alexander Holzinger
-     * @version 1.0
-     */
-    public void set( String koord, Spielfigur figur ) throws IndexOutOfBoundsException {
-        int[] koords = getValidKoords( koord );
-        //JOptionPane.showMessageDialog(null, koords[ 1 ]);
-        feld[ koords[ 0 ] ][ koords[ 1 ] ] = figur;
-    }
-    
-    public void set( int x, int y, Spielfigur figur ) throws IndexOutOfBoundsException {
-        feld[ x ][ y ] = figur;
-    }
-    
-    /**
-     * Diese Methode gibt die Figur an der Stelle koord zurück
-     * 
-     * @param koord Koordinaten der Figur
-     * @return Gibt die Spielfigur an den Koordinaten koord zurück
-     * @throws IndexOutOfBoundsException
-     * @author Alexander Holzinger
-     * @version 1.0
-     */
-    public Spielfigur get( String koord ) throws IndexOutOfBoundsException {
-        int[] koords = getValidKoords( koord );
-        return feld[ koords[ 0 ] ][ koords[ 1 ] ];
-    }
-    
-    public int [] getKoords( String koord ) throws IndexOutOfBoundsException {
-        int[] koords = getValidKoords( koord );
-        return koords;
-    }
-    
-    public Spielfigur get( int [] koords ) throws IndexOutOfBoundsException {
-        return feld[ koords[ 0 ] ][ koords[ 1 ] ];
-    }
-    
-    public Spielfigur get( int x, int y ) throws IndexOutOfBoundsException {
-        return feld[ x ][ y ];
-    }
-    
-    /**
-     * Diese Methode löscht eine Figur an der Stelle koord
-     * 
-     * @param koord Die Koordinaten der zu löschenden Spielfigur
-     * @return Die Gelöschte Spielfigur
-     * @throws IndexOutOfBoundsException
-     * @author Alexander Holzinger
-     * @version 2.0
-     */
-    public Spielfigur del( String koord ) throws IndexOutOfBoundsException {
-        Spielfigur tmp = get( koord );
-        set( koord, null );
-        return tmp;
-    }
-    
-    /**
-     * Diese Methode tauscht zwei Spielfiguren an den Koordinaten koord1 und koord2
-     * 
-     * @param koord1 Koordinaten Spielfigur 1
-     * @param koord2 Koordinaten Spielfigur 2
-     * @throws IndexOutOfBoundsException
-     * @author Alexander Holzinger
-     * @version 1.0
-     */
-    public void flip( String koord1, String koord2 ) throws IndexOutOfBoundsException {
-        int[] koords1 = getValidKoords( koord1 );
-        int[] koords2 = getValidKoords( koord2 );
-        
-        // Tauschen mit Hilfsvariable (tmp)
-        Spielfigur tmp = feld[ koords1[ 0 ] ][ koords1[ 1 ] ];
-        feld[ koords1[ 0 ] ][ koords1[ 1 ] ] = feld[ koords2[ 0 ] ][ koords2[ 1 ] ];
-        feld[ koords2[ 0 ] ][ koords2[ 1 ] ] = tmp;
-    }
-    
-    /**
-     * Tauscht Spielfiguren aus
-     * @param startX
-     * @param startY
-     * @param zielX
-     * @param zielY
-     */
-    public void flip( int startX, int startY, int zielX, int zielY ) {
-        
-        // Tauschen mit Hilfsvariable (tmp)
-        Spielfigur tmp = feld[ startX ][ zielY ];
-        feld[ startX ][ startY ] = feld[ zielX ][ zielY ];
-        feld[ zielX ][ zielY ] = tmp;
-    }
-    
-    /**
-     * Diese Methode gibt die Koordinaten im X-/Y-Format zurück (z.B.: 5 / 7), welches direkt mit
-     * der Implementierung des Arrays kompatibel ist
-     * 
-     * @param koord Die Koordinaten im Format, dass von Schach bekannt ist (z.B.: A1, C7)
-     * @return Ein int[ 2 ] mit der X- und Y-Koordinate
-     * @throws IllegalArgumentException
-     * @author Alexander Holzinger
-     * @version 1.0
-     */
-    public int[] getValidKoords( String koord ) throws IllegalArgumentException {
-        koord = koord.toUpperCase();
-        
-        // Überprüfung
-        if ( ! validKoord( koord ) ) throw new IllegalArgumentException( "Ungültige Koordinaten!" );
-        
-        // Buchstaben und Zahlen zu Indizes umformen
-        int[] koords = new int[ 2 ];
-        koords[ 0 ] = koord.charAt( 0 ) - 65;
-        koords[ 1 ] = koord.charAt( 1 ) - 49;
-        return koords;
-    }
-    
-    /**
-     * prüft ob die gegebene Koordinate gültig ist
-     * @param koord
-     * @return gültig?
-     */
-    public static boolean validKoord( String koord ) {
-        return koord.matches( "[a-hA-H][1-8]" );
-        
     }
     
     @Override
@@ -225,102 +273,4 @@ public class Spielfeld {
         return sb.toString();
     }
     
-    
-    /**
-     * Prüft ob die zwei Koordinaten benachbart sind
-     * @param koord1
-     * @param koord2
-     * @return benachbart?
-     * @throws IllegalArgumentException 
-     */
-    public static boolean isNeighbourKoord( String koord1, String koord2 ) throws IllegalArgumentException{
-        
-        // Prüft ob Koordinaten gültig sind
-        if( ! validKoord( koord1 ) || ! Spielfeld.validKoord( koord2 ) ) {
-            throw new IllegalArgumentException( "Ungültige Koordinaten!" );
-        }
-        
-        // Wenn in derselben Spalte, dann gleich 0 ( => a1 a2; |a - a| = 0 )
-        // Wenn in Nachbarspalten, dann gleich 1 ( => a1 b2; |a - b| = 1 )
-        int diff1 = abs( koord1.charAt( 0 ) - koord2.charAt( 0 ) );
-        int diff2 = abs( koord1.charAt( 1 ) - koord2.charAt( 1 ) );
-        
-        // Nachbarn sind zwei Felder, wenn sie entweder in gleichen Spalten 
-        // und in benachbarten Zeilen sind oder umgekehrt
-        return diff1 + diff2 == 1;
-    }
-    
-    
-    /**
-     * gibt alle Nachbarkoordinaten zurück
-     * @param koord
-     * @return Nachbarkoordinaten
-     * @throws IllegalArgumentException 
-     */
-    public static ArrayList<String> getNeighbourKoords( String koord ) throws IllegalArgumentException{
-        
-        // Prüft ob Koordinate gültig ist
-        if( ! validKoord( koord ) ) {
-            throw new IllegalArgumentException( "Ungültige Koordinate!" );
-        }
-        
-        ArrayList<String> koords = new ArrayList<>();
-        String cache;
-        
-        // liker Nachbar
-        cache = Character.toString( (char) ( koord.charAt( 0 ) - 1 ) ) + Character.toString( koord.charAt( 1 ) );
-        if( Spielfeld.validKoord( cache ) ) {
-            koords.add( cache );
-        }
-        
-        // unterer Nachbar
-        cache = Character.toString( koord.charAt( 0 ) ) + Character.toString( (char) ( koord.charAt( 1 ) - 1 ) );
-        if( Spielfeld.validKoord( cache ) ) {
-            koords.add( cache );
-        }
-        
-        // rechter Nachbar
-        cache = Character.toString( (char) ( koord.charAt( 0 ) + 1 ) ) + Character.toString( koord.charAt( 1 ) );
-        if( Spielfeld.validKoord( cache ) ) {
-            koords.add( cache );
-        }
-        
-        
-       // oberer Nachbar
-        cache = Character.toString( koord.charAt( 0 ) ) + Character.toString( (char) ( koord.charAt( 1 ) + 1 ) );
-        if( Spielfeld.validKoord( cache ) ) {
-            koords.add( cache );
-        }
-        
-        return koords;
-    }
-    
-    /**
-     * gibt alle gültigen Nachbarfiguren zurück
-     * @param koord
-     * @return Nachbarfiguren
-     */
-    public ArrayList<Spielfigur> getNeighbours( String koord ) {
-        
-        // Prüft ob Koordinate gültig ist
-        if( ! validKoord( koord ) ) {
-            throw new IllegalArgumentException( "Ungültige Koordinate!" );
-        }
-        
-        ArrayList<Spielfigur> neighbours = new ArrayList<>();
-        
-        ArrayList<String> neighbourKoords = getNeighbourKoords( koord );
-        
-        // Prüft alle Nachbarfelder auf vorhandene Figuren
-        for( String neighbourKoord : neighbourKoords ) {
-            
-            if( get( neighbourKoord ) != null ) {
-                
-                neighbours.add( get( neighbourKoord ) );
-            }
-        }
-        
-        return neighbours;
-        
-    }
 }

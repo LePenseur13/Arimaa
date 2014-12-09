@@ -21,13 +21,13 @@ public class History {
     //Konstruktoren
     public History(Spielfeld spielfeld){
         this.spielfeld = spielfeld;
-        this.living = spielfeld.getNumberFiguren();
+        this.living = spielfeld.getFigurenAnzahl();
     }
     
     public void addEntry(){
         histoy.add(spielfeld.copy());
-        if (spielfeld.getNumberFiguren() < this.living){
-            this.living = spielfeld.getNumberFiguren();
+        if (spielfeld.getFigurenAnzahl() < this.living){
+            this.living = spielfeld.getFigurenAnzahl();
             letzterPruefungsEintrag = histoy.get(histoy.size()-1);
         }
     }
