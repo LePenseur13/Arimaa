@@ -43,7 +43,7 @@ public class spielfeld extends javax.swing.JPanel {
     String[] typen = {"Elefant", "Kamel", "Pferd", "Hund", "Katze", "Kaninchen"};
     String[] typensetzen = {"Elefant", "Kamel", "Pferd", "Pferd", "Hund", "Hund", "Katze", "Katze"};
     int typenSetzenIndex = 0;
-    String path = "C:\\Users\\Marcus\\Documents\\GitHub\\Arimaa\\src\\icons\\";
+    String path = "C:\\Users\\JosefChristoph\\Documents\\GitHub\\Arimaa\\src\\icons\\";
     
     boolean showKoords = false;
     
