@@ -117,8 +117,8 @@ public class Arimaa2 {
             }
             
             case Spielen: {
-                valid = checkKoordsGame( koord );
-                
+                //valid = checkKoordsGame( koord );
+                valid = true;
                 if( valid ) {
                     
                     setKoord( koord );
@@ -326,15 +326,15 @@ public class Arimaa2 {
         
         // Stack mit sämtlichen Figuren exclusive Kaninchen
         Stack<Spielfigur> figuren = new Stack<>();
-        figuren.push( new Spielfigur( activePlayer, Typ.Elefant ) );
+        figuren.push( new Spielfigur( activePlayer, Typ.Katze ) );
+        figuren.push( new Spielfigur( activePlayer, Typ.Katze ) );
+        figuren.push( new Spielfigur( activePlayer, Typ.Hund ) );
+        figuren.push( new Spielfigur( activePlayer, Typ.Hund ) );
+        figuren.push( new Spielfigur( activePlayer, Typ.Pferd ) );
+        figuren.push( new Spielfigur( activePlayer, Typ.Pferd ) );
         figuren.push( new Spielfigur( activePlayer, Typ.Kamel ) );
-        figuren.push( new Spielfigur( activePlayer, Typ.Pferd ) );
-        figuren.push( new Spielfigur( activePlayer, Typ.Pferd ) );
-        figuren.push( new Spielfigur( activePlayer, Typ.Hund ) );
-        figuren.push( new Spielfigur( activePlayer, Typ.Hund ) );
-        figuren.push( new Spielfigur( activePlayer, Typ.Katze ) );
-        figuren.push( new Spielfigur( activePlayer, Typ.Katze ) );
-
+        figuren.push( new Spielfigur( activePlayer, Typ.Elefant ) );
+        
         int y;
         
         if( activePlayer.equals( Farbe.Gold ) ) {
