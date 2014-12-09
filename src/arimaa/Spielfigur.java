@@ -12,39 +12,41 @@ package arimaa;
  * @version 1.1
  */
 public class Spielfigur {
-    // Attribute
+    
+    // -------------------------------------------------------------------------
+    // -------------------------- Attribute ------------------------------------
+    // -------------------------------------------------------------------------
+    
     private final Typ typ;
     private final Farbe farbe;
     
-    //Konstruktoren
-    
-    /**
-     * 
-     * @param farbe
-     * @param typ 
-     */
-    public Spielfigur( String farbe, String typ ) {
-        this.farbe = Farbe.valueOf( farbe );
-        this.typ = Typ.valueOf( typ );
-    }
+    // -------------------------------------------------------------------------
+    // ---------------------- Konstruktoren ------------------------------------
+    // -------------------------------------------------------------------------
     
     public Spielfigur( Farbe farbe, Typ typ ) {
         this.farbe = farbe;
         this.typ = typ;
     }
     
-    //Methoden
-    /**
-     * 
-     * @param andereFigur
-     * @return 
-     */
-    public boolean isStronger( Spielfigur andereFigur ) {
-        return typ.isStronger( andereFigur.typ );
-    }
+    // -------------------------------------------------------------------------
+    // --------------------------- METHODEN ------------------------------------
+    // -------------------------------------------------------------------------
     
     /**
-     * 
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        Spielfigur sf = new Spielfigur( Farbe.Gold, Typ.Elefant );
+        System.out.println( sf );
+        System.out.println( sf.isStronger( new Spielfigur( Farbe.Silber, Typ.Elefant )) );
+    }
+    
+    // -------------------------------------------------------------------------
+    // ----------------------------- GETTER ------------------------------------
+    // -------------------------------------------------------------------------
+    
+    /**
      * @return farbe
      */
     public Farbe getFarbe() {
@@ -52,32 +54,32 @@ public class Spielfigur {
     }
     
     /**
-     * 
      * @return typ
      */
     public Typ getTyp() {
         return typ;
     }
     
+    
+    // -------------------------------------------------------------------------
+    // --------------------------- ISSTRONGER ----------------------------------
+    // -------------------------------------------------------------------------
+    
     /**
      * 
      * @param andereFigur
-     * @return 
+     * @return ob this stärker ist als die Vergleichsfigur
      */
-    public int compareTo( Spielfigur andereFigur ) {
-        return typ.compare( andereFigur.typ );
+    public boolean isStronger( Spielfigur figur ) {
+        return typ.isStronger( figur.typ );
     }
-    
-    /**
-     * 
-     * @return 
-     */
 
+    // -------------------------------------------------------------------------
+    // --------------------------- TOSTRING ------------------------------------
+    // -------------------------------------------------------------------------
+    
+    @Override
     public String toString() {
         return farbe.name().substring( 0, 1) + typ.ordinal();
     } 
-    
-    public Spielfigur getCopy() {
-        return new Spielfigur( farbe.toString(), typ.toString() );
-    }
 }

@@ -26,6 +26,7 @@ public class Spielfeld {
     // ---------------------- Konstruktoren ------------------------------------
     // -------------------------------------------------------------------------
     
+    
     public Spielfeld() {
         feld = new Spielfigur[ 8 ][ 8 ];
     }
@@ -48,10 +49,8 @@ public class Spielfeld {
         System.out.println( s );
         s.set( new Koord( 0, 1 ), new Spielfigur( Farbe.Silber, Typ.Katze ) );
         System.out.println( s );
-        Spielfeld s1 = s.copy();
-        s1.del( new Koord( 0, 1 ) );
-        System.out.println( s1 );
-        System.out.println( s );
+        System.out.println( s.getFigurenAnzahl() );
+        System.out.println( Arrays.toString( Spielfeld.getNeighbourKoords( new Koord( 7, 7 ) ).toArray() ) );
     }
     
     // -------------------------------------------------------------------------
@@ -242,7 +241,15 @@ public class Spielfeld {
      * @version 1.0
      */
     public Spielfeld copy() {
-        return new Spielfeld( this.feld.clone() );
+        Spielfigur[][] feld2 = feld.clone();
+        
+        for (int i = 0; i < feld.length; i++) {
+            
+            feld2[ i ] = feld[ i ].clone();
+        }
+        
+        return new Spielfeld( feld2 );
+        
     }
     
     @Override

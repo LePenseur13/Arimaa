@@ -13,24 +13,12 @@ package arimaa;
 public enum Typ {
     Kaninchen, Katze, Hund, Pferd, Kamel, Elefant;
 
-    
-    
-    /**
-     * Gibt den Unterschied der Stärken, der beiden Typen an
-     * 
-     * @param t Typ mit dem verglichen wird
-     * @return 
-     */
-    public int compare( Typ t ) {
-        return this.ordinal() - t.ordinal();
-    }
-    
     /**
      * 
      * @param t Typ mit dem verglichen wird
-     * @return 
+     * @return ob this stärker als t ist
      */
     public boolean isStronger( Typ t ) {
-        return this.compare( t ) > 0;
+        return this.ordinal() > t.ordinal();
     }
 }

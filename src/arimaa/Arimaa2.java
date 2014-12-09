@@ -5,17 +5,24 @@
  */
 package arimaa;
 
-import gui.spielfeld;
+//import gui.spielfeld;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Stack;
 
 /**
  *
  * @author JosefChristoph
  */
 public class Arimaa2 {
+    
+    // -------------------------------------------------------------------------
+    // -------------------------- Attribute ------------------------------------
+    // -------------------------------------------------------------------------
+    
     private Spielfeld spielfeld;
+    
     private Spielphase spielphase;
     private Farbe activePlayer;
     private int schritt;
@@ -23,86 +30,112 @@ public class Arimaa2 {
     private Spielfigur cache;
 
     
-    private Integer startX;
-    private Integer startY;
+    private Koord start;
+    private Koord ziel;
     
-    private Integer zielX;
-    private Integer zielY;
+    //private final spielfeld guiReferenz;
     
-    private spielfeld guiReferenz;
+    // -------------------------------------------------------------------------
+    // ---------------------- Konstruktoren ------------------------------------
+    // -------------------------------------------------------------------------
     
-    // Konstruktor
-    
-    public Arimaa2( spielfeld spielfeld ) {
-        guiReferenz = spielfeld;
+    public Arimaa2( /*spielfeld spielfeld*/ ) {
+        //guiReferenz = spielfeld;
         this.spielfeld = new Spielfeld();
         
         spielphase = Spielphase.Aufstellen;
         
         activePlayer = Farbe.Gold;
         schritt = 1;
+        
+        
+        figurenAufsBrett();
+        
+        // Anzeigen
+            //guiReferenz.generiereFeld( spielfeld );
+        print();
     }
+    
+    // -------------------------------------------------------------------------
+    // --------------------------- METHODEN ------------------------------------
+    // -------------------------------------------------------------------------
     
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Arimaa2 a = new Arimaa2(null);
+        Arimaa2 a = new Arimaa2();
+        a.print();
         
+        Farbe gewinner;
+        
+        do {
+            System.out.println( a.activePlayer );
+            
+            try{
+                a.setKords( new Koord( Arimaa2.benutzerEingabe() ) );
+            } catch( IllegalArgumentException e ){
+                // Do nothing
+            }
+            
+            gewinner = a.gewinner();
+            
+            if( a.spielphase.equals( Spielphase.Aufstellen) ) {
+                a.aufstellenFertig();
+            }
+            
+        } while( gewinner == null );
     }
     
     /**
      * Schnittstelle für die GUI
-     * @param x
-     * @param y
+     * @param koord
      * @return ob gültig
      */
-    public boolean setKords( int x, int y ) {
-        boolean validity;
-        if( spielphase.equals( Spielphase.Aufstellen ) ) {
-            // ------ Aufstellen -----
-            
-            validity = checkKoordsAufstellung( x, y );
+    public boolean setKords( Koord koord ) {
         
-        } else {
-            // ------ Game -----
+        boolean valid = false;
+        
+        switch( spielphase) {
             
-            validity = checkKoordsGame( x, y );
+            case Aufstellen: {
+                valid = checkKoordsAufstellung( koord );
+                
+                if( valid ) {
+                    
+                    setKoord( koord );
+                }
+                
+                break;
+            }
             
-            // Ausnahmefall Schieben
-            // d.h. Ziel gesetzt und Ziel ist eine Figur
-            if( zielX != null && spielfeld.get( zielX, zielY ) != null ) {
+            case Spielen: {
+                valid = checkKoordsGame( koord );
                 
-                // Figur speichern
-                cache = spielfeld.get( zielX, zielY );
+                if( valid ) {
+                    
+                    setKoord( koord );
+                }
                 
-                // Figur vom spielfeld nehmen
-                spielfeld.set( zielX, zielY, null );
-                
-                // Schritt ausführen
-                spielfeld.flip( startX, startY, zielX, zielY );
-                
-                // Anzeigen
-                guiReferenz.generiereFeld( spielfeld );
-                
-                deleteKoords();
+                break;
             }
         }
         
         // Ziel - Koord gegeben -> Schritt ausführen
-        if( zielX != null ) {
+        if( ziel != null ) {
             
-            // Im Falle des 
-            spielfeld.flip( startX, startY, zielX, zielY );
+            makeMove();
             
-            deleteKoords();
+            resetKoords();
             
             // Anzeigen
-            guiReferenz.generiereFeld( spielfeld );
+            //guiReferenz.generiereFeld( spielfeld );
+            
+            print();
             
         }
         
-        return validity;
+        return valid;
     }   
     
     // -------------------------------------------------------------------------
@@ -113,15 +146,15 @@ public class Arimaa2 {
      * Prüft alle Koordinaten während der 1.Phase (Aufstellung)
      * @return ob gültig
      */
-    private boolean checkKoordsAufstellung( int x, int y ) {
+    private boolean checkKoordsAufstellung( Koord koord ) {
         
         boolean validity = true;
         
         // Falls es eine Startkoordinate ist
-        if( startX == null ) {
+        if( start == null ) {
             
             // Dort muss sich eine Figur befinden
-            if( spielfeld.get( x, y ) == null ) {
+            if( spielfeld.get( koord ) == null ) {
                 validity = false;
             }
         }
@@ -131,13 +164,13 @@ public class Arimaa2 {
         if( activePlayer.equals( Farbe.Gold ) ) {
             
             // Darf nur die ersten 3 Reihen benutzen
-            if( y > 3 ) {
+            if( koord.y > 2 ) {
                 validity = false;
             }
         } else {
             
             // Darf nur die letzten 3 Reihen benutzen
-            if( y < 6 ) {
+            if( koord.y < 5 ) {
                 validity = false;
             }
         }
@@ -163,17 +196,25 @@ public class Arimaa2 {
             // restliche Kaninchen aufstellen
             kaninchenAufstellen( activePlayer );
         
-            // Anzeigen
-            guiReferenz.generiereFeld( spielfeld );
-        
-            // Falls auch Silber fertig ist beginnt Phase 2 Spielen
-            if( activePlayer.equals( Farbe.Silber ) ) {
+            
+            // In jedem Fall ist nun der andere Spieler an der Reihe
+            changeActivePlayer();
+            
+            // Falls nun Gold wieder an der Reihe ist beginnt Phase 2 Spielen
+            if( activePlayer.equals( Farbe.Gold ) ) {
             
                 spielphase = Spielphase.Spielen;
+                
+            } else {
+                
+                // Silberne Figuren aufs Spielbrett geben
+                figurenAufsBrett();
+                
             }
         
-            // In jedem Fall ist nur der andere Spieler an der Reihe
-            changeActivePlayer();
+            // Anzeigen
+            //guiReferenz.generiereFeld( spielfeld );
+            print();
         
         }
         
@@ -185,7 +226,7 @@ public class Arimaa2 {
      * Prüft ob fertig aufgestellt wurde
      * d.h auf den ersten bzw letzten 2 Reihen
      * d.h auf der 3 bzw 6 Reihe keine Figuren
-     * @return validity
+     * @return valid
      */
     private boolean checkAufstellenFertig() {
         
@@ -194,16 +235,16 @@ public class Arimaa2 {
         int y;
         if( activePlayer.equals( Farbe.Gold ) ) {
             
-            y = 2;
+            y = 2; // 3. Reihe
         } else {
             
-            y = 5;
+            y = 5; // 6. Reihe
         }
         
         for ( int x = 0; x < 8; x++  ){
             
             // Falls dort eine Figur sein sollte 
-            if( spielfeld.get( x, y ) != null ) {
+            if( spielfeld.get( new Koord( x, y ) ) != null ) {
                 
                 validity = false;
                 break;
@@ -211,6 +252,41 @@ public class Arimaa2 {
         }
         
         return validity;
+    }
+    
+    /**
+     * Je nachdem welcher Spieler mit dem Aufstellen an der Reihe ist
+     * werden seine Figuren aufs Spielfeld gelegt
+     */
+    private void figurenAufsBrett() {
+        
+        // Stack mit sämtlichen Figuren exclusive Kaninchen
+        Stack<Spielfigur> figuren = new Stack<>();
+        figuren.push( new Spielfigur( activePlayer, Typ.Elefant ) );
+        figuren.push( new Spielfigur( activePlayer, Typ.Kamel ) );
+        figuren.push( new Spielfigur( activePlayer, Typ.Pferd ) );
+        figuren.push( new Spielfigur( activePlayer, Typ.Pferd ) );
+        figuren.push( new Spielfigur( activePlayer, Typ.Hund ) );
+        figuren.push( new Spielfigur( activePlayer, Typ.Hund ) );
+        figuren.push( new Spielfigur( activePlayer, Typ.Katze ) );
+        figuren.push( new Spielfigur( activePlayer, Typ.Katze ) );
+
+        int y;
+        
+        if( activePlayer.equals( Farbe.Gold ) ) {
+            
+            y = 2; // 3. Reihe
+            
+        } else {
+            
+            y = 5; // 6. Reihe
+        }
+        
+        for( int x = 0; x < 8; x++ ) {
+            
+            spielfeld.set( new Koord( x, y ), figuren.pop() );
+        }
+        
     }
     
     /**
@@ -231,11 +307,11 @@ public class Arimaa2 {
         
         for ( int x = 0; x < 8; x++ ){
             for ( int y : range ){
-                
+                Koord koord = new Koord( x, y );
                 // Falls leer mit Kaninchen befüllen
-                if ( spielfeld.get( x, y ) == null ){
+                if ( spielfeld.get( koord ) == null ){
                     
-                    spielfeld.set( x, y, kaninchen);
+                    spielfeld.set( koord, kaninchen);
                 }
             }
         }
@@ -245,7 +321,7 @@ public class Arimaa2 {
     // ------------------------- Game ------------------------------------------
     // -------------------------------------------------------------------------
     
-    private boolean checkKoordsGame( int x, int y ) {
+    private boolean checkKoordsGame( Koord koord ) {
         boolean validity = true;
         
         return validity; 
@@ -254,6 +330,64 @@ public class Arimaa2 {
 
     public Spielfigur getCache() {
         return cache;
+    }
+    
+    /**
+     * führt einen Schritt aus
+     * Ausnahme Schieben wird berücksichtigt
+     * 2.Phase -> zählt Schritte mit und wenn nötig wechselt Spieler
+     */
+    private void makeMove() {
+        
+        // Ausnahme: cache gesetzt -> Schieben
+        if( cache != null ){
+            
+            // setzt Figur auf Zielfeld
+            spielfeld.set( ziel, cache );
+            cache = null;
+         
+
+        } else {
+            // andernfalls normaler Verlauf
+            
+            // in der 2. Phase zählt Schritte mit
+            if( spielphase.equals( Spielphase.Spielen ) ) {
+            
+                // Im Falle des Schiebens 
+                // d.h. wenn auf ziel eine Figur steht
+                if( spielfeld.get( ziel ) != null ) {
+                
+                    // Figur wird vomSpielfeld genommen
+                    cache = spielfeld.del( ziel );
+                    
+                }
+            
+                // zählt dern Schritt hoch
+                nextSchritt();
+                
+            }
+        
+        // Schlussendlich der Tatsächliche Schritt
+
+        spielfeld.flip( start, ziel );
+        
+        } 
+    }
+    
+    private void nextSchritt() {
+        
+        // Falls dies schon der 4. Schritt war
+        // Wird SChritt zurückgesetzt und der Spieler gewechselt
+        if( schritt == 4 ) {
+            
+            schritt = 1;
+            changeActivePlayer();
+        
+        } else {
+            
+            // 
+            schritt++;
+        }
     }
     
     /**
@@ -281,9 +415,9 @@ public class Arimaa2 {
         
         // Prüft ob sich in der letzten Reihe 
         // ein goldenes Kaninchen befindet
-        for( int i = 0; i < 8; i++ ) {
+        for( int x = 0; x < 8; x++ ) {
             
-            Spielfigur figur = spielfeld.get( i, 7);
+            Spielfigur figur = spielfeld.get( new Koord( x, 7 ) );
             
             if( figur != null && figur.getFarbe().equals( farbe ) && figur.getTyp().equals( Typ.Kaninchen ) ) {
                 
@@ -295,9 +429,9 @@ public class Arimaa2 {
         
         // Prüft ob sich in der ersten Reihe 
         // ein silbernes Kaninchen befindet
-        for( int i = 0; i < 8; i++ ) {
+        for( int x = 0; x < 8; x++ ) {
             
-            Spielfigur figur = spielfeld.get( i, 0);
+            Spielfigur figur = spielfeld.get( new Koord( x, 0 ) );
             
             if( figur != null && figur.getFarbe().equals( farbe ) && figur.getTyp().equals( Typ.Kaninchen ) ) {
                 
@@ -311,12 +445,29 @@ public class Arimaa2 {
     /**
      * setzt alle gespeicherten Koordinaten zurück
      */
-    private void deleteKoords() {
-        startX = null;
-        startY = null;
-        zielX = null;
-        zielY = null;
+    private void resetKoords() {
+        start = null;
+        ziel = null;
         
+    }
+    
+    /**
+     * speichert die Koordinate in die richtige Variable
+     */
+    private void setKoord( Koord koord ) {
+        
+        // Wenn start schon gesetzt wurde 
+        // ODER
+        // Falls chache eine Figur enthält wird Ziel gesetzt
+        if( start != null || cache != null ) {
+            
+            ziel = koord;
+            
+        } else {
+            
+            // in allen anderen Fällen wird logischerweise start gesetzt
+            start = koord;
+        }
     }
     
     /**
@@ -339,15 +490,12 @@ public class Arimaa2 {
         BufferedReader br = new BufferedReader( new InputStreamReader( System.in ) );
         String input;
         
-        do {
-            try {
-                input = br.readLine();
+        try {
+            input = br.readLine();
                 
-            } catch ( IOException ex ) {
-                throw new IllegalArgumentException( "Eingabevorgang abgebrochen!" );
-            }
-            
-        } while( ! Spielfeld.validKoord( input ) ); // Prüft ob der gegebene String eine gültige Koordinate ist
+        } catch ( IOException ex ) {
+             throw new IllegalArgumentException( "Eingabevorgang abgebrochen!" );
+        }
         
         return input;
     }
