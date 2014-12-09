@@ -46,7 +46,7 @@ public class ArimaaGUI extends javax.swing.JFrame {
         this.setBackground(Color.white);
         jPanel3.setBackground(Color.white);
         setResizable(false);
-        Toolkit tk = Toolkit.getDefaultToolkit();  
+        Toolkit tk = Toolkit.getDefaultToolkit();
         int xSize = ((int) tk.getScreenSize().getWidth());  
         int ySize = ((int) tk.getScreenSize().getHeight());
         //setMaximumSize(new Dimension(700, 543));
@@ -197,6 +197,7 @@ public class ArimaaGUI extends javax.swing.JFrame {
         if (! b) {
             JOptionPane.showMessageDialog(this, "Aktion kann noch nicht beendet werden!");
         }
+        spielfeld1.updateUI();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed

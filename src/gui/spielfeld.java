@@ -11,15 +11,19 @@ import arimaa.Koord;
 import arimaa.Spielfeld;
 import arimaa.Spielfigur;
 import arimaa.Typ;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.LayoutManager;
+import java.awt.LayoutManager2;
 import java.awt.Point;
 import java.awt.Toolkit;
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
@@ -39,7 +43,7 @@ public class spielfeld extends javax.swing.JPanel {
     String[] typen = {"Elefant", "Kamel", "Pferd", "Hund", "Katze", "Kaninchen"};
     String[] typensetzen = {"Elefant", "Kamel", "Pferd", "Pferd", "Hund", "Hund", "Katze", "Katze"};
     int typenSetzenIndex = 0;
-    String path = "C:\\Users\\JosefChristoph\\Documents\\GitHub\\Arimaa\\src\\icons\\";
+    String path = "C:\\Users\\Marcus\\Documents\\GitHub\\Arimaa\\src\\icons\\";
     
     boolean showKoords = false;
     
@@ -58,7 +62,7 @@ public class spielfeld extends javax.swing.JPanel {
     public spielfeld() {
         initComponents();
         setBackground(Color.white);
-        arimaa = new Arimaa2(/*this*/);
+        arimaa = new Arimaa2(this);
         spielfeld = arimaa.spielfeld;
         //arimaa.print();
         //spielfeld = arimaa.getSpielFeld();
@@ -246,6 +250,8 @@ public class spielfeld extends javax.swing.JPanel {
             arimaa.setKords(k);
             if (arimaa.getCache() != null){
                 cursor = arimaa.getCache();
+            } else {
+                cursor = null;
             }
             
             //generiereFeld(spielfeld);
@@ -275,6 +281,8 @@ public class spielfeld extends javax.swing.JPanel {
             arimaa.setKords(k);
             if (arimaa.getCache() != null){
                 cursor = arimaa.getCache();
+            } else {
+                cursor = null;
             }
             //generiereFeld(spielfeld);
             generiereFeldUpdate(null);
@@ -286,11 +294,21 @@ public class spielfeld extends javax.swing.JPanel {
     public boolean aufstellenFertig(){
         boolean b =  arimaa.fertig();
         if (b){
-            removeAll();
-            generiereFeld(spielfeld);
+            //removeAll();
+            generiereFeldUpdate(spielfeld);
         }
         return b;
     }
+    
+    public void spielEndeErreicht(Farbe gewinner){
+        removeAll();
+        setLayout(new BorderLayout());
+        JLabel jl = new JLabel("Farbe " + gewinner.name() + " hat gewonnen!");
+        jl.setVerticalTextPosition(getWidth()/2-jl.getWidth());
+        jl.setVerticalTextPosition(getHeight()/2-jl.getHeight());
+        add(jl);
+    }
+    
     }//GEN-LAST:event_formMouseReleased
 /*
     private void formMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMousePressed

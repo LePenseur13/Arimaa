@@ -136,7 +136,7 @@ public class Arimaa2 {
             resetKoords();
             
             // Anzeigen
-            guiReferenz.generiereFeld( spielfeld );
+            guiReferenz.generiereFeldUpdate( spielfeld );
             
             print();
             
@@ -220,7 +220,7 @@ public class Arimaa2 {
             }
         
             // Anzeigen
-            guiReferenz.generiereFeld( spielfeld );
+            guiReferenz.generiereFeldUpdate( spielfeld );
             print();
         
         }
@@ -762,7 +762,7 @@ public class Arimaa2 {
         // Falls jemand gewonnen hat
         if( gewinner != null ) {
             
-            guiReferenz.spielendeErreicht( gewinner );
+            guiReferenz.spielEndeErreicht( gewinner );
 
         } else {
             
