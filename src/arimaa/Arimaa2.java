@@ -145,8 +145,55 @@ public class Arimaa2 {
         return valid;
     }   
     
+    /**
+     * speichert die Koordinate in die richtige Variable
+     */
+    private void setKoord( Koord koord ) {
+        
+        // Wenn start schon gesetzt wurde 
+        // ODER
+        // Falls chache eine Figur enthält wird Ziel gesetzt
+        if( start != null || cache != null ) {
+            
+            ziel = koord;
+            
+        } else {
+            
+            // in allen anderen Fällen wird logischerweise start gesetzt
+            start = koord;
+        }
+    }
+    
+    
+    /**
+     * Ruft je nachdem in welcher Phase man ist 
+     * die zugehörige Methode auf
+     * @return ob wirklich fertig
+     */
+    public boolean fertig() {
+        
+        // Aufstellen
+        
+        if( spielphase.equals( Spielphase.Aufstellen ) ) {
+            
+            return aufstellenFertig();
+        }
+        
+        // Schritt
+        return zugFertig();
+
+    }
+    
+    public Spielfigur getCache() {
+        return cache;
+    }
+    
     // -------------------------------------------------------------------------
-    // ------------------ Aufstellung ------------------------------------------
+    // ------------------ AUFSTELLUNG ------------------------------------------
+    // -------------------------------------------------------------------------
+    
+    // -------------------------------------------------------------------------
+    // ----------------------- CHECK ------------------------------------------
     // -------------------------------------------------------------------------
     
     /**
@@ -194,6 +241,11 @@ public class Arimaa2 {
      * 
      * @return valid
      */
+    
+    // -------------------------------------------------------------------------
+    // ------------------------ FERTIG -----------------------------------------
+    // -------------------------------------------------------------------------
+    
     private boolean aufstellenFertig() {
         
         boolean valid = checkAufstellenFertig();
@@ -266,6 +318,9 @@ public class Arimaa2 {
      * werden seine Figuren aufs Spielfeld gelegt
      */
     
+    // -------------------------------------------------------------------------
+    // ------------------ FIGUREN AUFS BRETT -----------------------------------
+    // -------------------------------------------------------------------------
     
     private void figurenAufsBrett() {
         
@@ -330,6 +385,13 @@ public class Arimaa2 {
     // ------------------------- Game ------------------------------------------
     // -------------------------------------------------------------------------
     
+    
+    
+    // -------------------------------------------------------------------------
+    // ----------------------- CHECK ------------------------------------------
+    // -------------------------------------------------------------------------
+    
+    
     /**
      * Prüft ob Koordinate gültig
      * @param koord
@@ -361,6 +423,12 @@ public class Arimaa2 {
         
         return valid;
     }
+    
+    
+    // -------------------------------------------------------------------------
+    // ------------------------ FERTIG -----------------------------------------
+    // -------------------------------------------------------------------------
+    
     
     /**
      * Beendet vorzeitig den Zug
@@ -403,6 +471,12 @@ public class Arimaa2 {
      * @param koord
      * @return zielKoords
      */
+    
+    // -------------------------------------------------------------------------
+    // ------------------------ ZIELKOORDS -------------------------------------
+    // -------------------------------------------------------------------------
+    
+    
     private ArrayList<Koord> getZielKoords( Koord koord ) {
         ArrayList<Koord> zielKoords = new ArrayList<>();
         
@@ -579,6 +653,13 @@ public class Arimaa2 {
         return neighbourKoords;
     }
     
+    /**
+     * Entfernt jene Koordinate aus koords
+     * welche bei einem Kaninchen nicht möglich ist
+     * Regel: Kaninchen dürfen nicht zurückgehen
+     * @param koord
+     * @param koords 
+     */
     private void kaninchenRemoveKoordBehind( Koord koord, ArrayList<Koord> koords ) {
         
         // Falls sich dort überhaupt ein Kaninchen befindet
@@ -659,28 +740,10 @@ public class Arimaa2 {
         return verboten;
     }
     
-    public Spielfigur getCache() {
-        return cache;
-    }
     
-    /**
-     * Ruft je nachdem in welcher Phase man ist 
-     * die zugehörige Methode auf
-     * @return ob wirklich fertig
-     */
-    public boolean fertig() {
-        
-        // Aufstellen
-        
-        if( spielphase.equals( Spielphase.Aufstellen ) ) {
-            
-            return aufstellenFertig();
-        }
-        
-        // Schritt
-        return zugFertig();
-
-    }
+    // -------------------------------------------------------------------------
+    // ------------------------ MAKEMOVE ---------------------------------------
+    // -------------------------------------------------------------------------
     
     /**
      * führt einen Schritt aus
@@ -749,6 +812,11 @@ public class Arimaa2 {
         }
     }
     
+    // -------------------------------------------------------------------------
+    // ------------------------ CHANGE PLAYER ----------------------------------
+    // -------------------------------------------------------------------------
+    
+    
     /**
      * Falls jemand gewonnen hat wird das der GUI mitgeteilt
      * wechselt den Spieler
@@ -781,6 +849,9 @@ public class Arimaa2 {
         
     }
     
+    // -------------------------------------------------------------------------
+    // ------------------------ GEWINNER ---------------------------------------
+    // -------------------------------------------------------------------------
     
     /**
      * gibt die Frabe des Gewinners zurück
@@ -820,6 +891,10 @@ public class Arimaa2 {
         return null;
     }
     
+    // -------------------------------------------------------------------------
+    // ------------------------ HILFSMETHODE * TOSTRING ------------------------
+    // -------------------------------------------------------------------------
+    
     /**
      * setzt alle gespeicherten Koordinaten zurück
      */
@@ -829,24 +904,7 @@ public class Arimaa2 {
         
     }
     
-    /**
-     * speichert die Koordinate in die richtige Variable
-     */
-    private void setKoord( Koord koord ) {
-        
-        // Wenn start schon gesetzt wurde 
-        // ODER
-        // Falls chache eine Figur enthält wird Ziel gesetzt
-        if( start != null || cache != null ) {
-            
-            ziel = koord;
-            
-        } else {
-            
-            // in allen anderen Fällen wird logischerweise start gesetzt
-            start = koord;
-        }
-    }
+    
     
     /**
      * gibt das Spielfeld aus
