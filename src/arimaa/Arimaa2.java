@@ -52,7 +52,7 @@ public class Arimaa2 {
         activePlayer = Farbe.Gold;
         schritt = 1;
         
-        history = new History( this.spielfeld );
+        history = new History();
         
         figurenAufsBrett();
         
@@ -333,14 +333,39 @@ public class Arimaa2 {
     
     }
     
-    private boolean schrittFertig() {
+    /**
+     * Beendet vorzeitig den Zug
+     * @return ob beendet wurde
+     */
+    private boolean zugFertig() {
         
-        return true;
+        boolean fertig = checkZugFertig();
+        
+        if( fertig ) {
+            
+            schritt = 1;
+            changeActivePlayer();
+            
+        }
+        
+        return fertig;
     }
     
-    private boolean checkSchrittFertig() {
+    /**
+     * Prüft ob der Zug schon beendet werden darf
+     * @return valid
+     */
+    private boolean checkZugFertig() {
         
-        return true;
+        // Wenn dies keine verbotene Stellung ist
+        boolean valid = ! isVerboteneStellungen( spielfeld );
+        
+        if( cache != null ) {
+            
+            valid = false;
+        }
+        
+        return valid;
     }
     
     /**
@@ -363,8 +388,12 @@ public class Arimaa2 {
             
             // Darf die Figur sich bewegen oder ist sie festgehalten
             if( isMoveable( koord ) ) {
-               
                 
+                // ermittelt alleverschiebbaren gegnerischen Nachbarn
+                zielKoords.addAll( pushableOpponents( koord ) );
+                
+                // alle mögliche freien Felder
+                zielKoords.addAll( validFreeNeighbours( koord ) );
                 
             }
 
@@ -377,12 +406,11 @@ public class Arimaa2 {
                 // der Ausgangspunkt der letzten Figur 
                 // muss das Ziel von dieser sein
                 zielKoords.add( history.getLetzteStartKoord() );
-                
+               
             }
             
         }
-        
-        
+  
         return zielKoords;
     }
     
@@ -394,6 +422,9 @@ public class Arimaa2 {
      * @return 
      */
     private boolean isPullable( Koord koord ) {
+        
+        // nur in den letzten 3 Schritten möglich
+        if( schritt == 1 ) return false;
         
         // falls koord ein Nachbarfeld von der letzten startKoord 
         boolean neighbour = Spielfeld.isNeighbourKoord( koord, history.getLetzteStartKoord() );
@@ -413,33 +444,190 @@ public class Arimaa2 {
      */
     private boolean isMoveable( Koord koord ) {
         
-        ArrayList<Koord> neighbourKoords = Spielfeld.getNeighbourKoords( koord );
+        ArrayList<Spielfigur> neighbours = spielfeld.getNeighbours( koord );
         
         Spielfigur figur = spielfeld.get( koord );
         
         boolean festgehalten = false;
         boolean beschuetzt = false;
         
-        for( Koord neighbourKoord : neighbourKoords ) {
+        for( Spielfigur neighbour : neighbours ) {
             
             // Festgehalten ?
-            if( spielfeld.get( neighbourKoord ).getFarbe() != activePlayer 
-                && spielfeld.get( neighbourKoord ).isStronger( figur ) ) {
+            if( neighbour.getFarbe() != activePlayer 
+                && neighbour.isStronger( figur ) ) {
                             
                 festgehalten = true; 
                             
-            } else if( spielfeld.get( neighbourKoord ).getFarbe() == figur.getFarbe() ){
+            } else if( neighbour.getFarbe() == figur.getFarbe() ){
                 
                 // hat eine Figur der eigenen Farbe als Nachbar
                 beschuetzt = true;
                 
-            }   
-            
-        }
+            }
+        } 
         
         // Nur wenn festgehalten und nicht beschützt dann false
         
         return ! ( festgehalten && ! beschuetzt );
+    }
+    
+    /**
+     * Ermittlelt alle Felder auf denen verschiebbare 
+     * gegnerische Figuren sind
+     * @param koord
+     * @return verschiebbare Nachbarn
+     */
+    private ArrayList<Koord> pushableOpponents( Koord koord ) {
+        
+        ArrayList<Koord> neighbourKoords = Spielfeld.getNeighbourKoords( koord );
+        
+        Spielfigur figur = spielfeld.get( koord );
+        
+        for( Koord neighbourKoord : neighbourKoords ) {
+            
+            // Falls auf dem Feld eine schwächere Figur des Gegners
+            if( spielfeld.get( neighbourKoord ) != null 
+                && spielfeld.get( neighbourKoord ).getFarbe() != activePlayer 
+                && figur.isStronger( spielfeld.get( neighbourKoord ) ) ) {
+                
+                // Falls die zu schiebende Figur keine freien Nachbarfelder besitzt
+                // Wird auch diese Koordinate entfernt
+                if( getFreeNeighbours( neighbourKoord ).isEmpty() ) {
+                    
+                    neighbourKoords.remove( neighbourKoord );
+                }
+                
+            }else {
+                
+                // Falls nicht wird Koordinate einfach aus der LIste entfernt
+                neighbourKoords.remove( neighbourKoord );
+                
+            }
+            
+        }
+        
+        return neighbourKoords;
+    }
+    
+    /**
+     * Ermittelt alle leeren Nachbarfelder
+     * @param koord
+     * @return leere Nachbarfelder
+     */
+    private ArrayList<Koord> getFreeNeighbours( Koord koord ) {
+        
+        ArrayList<Koord> neighbourKoords = Spielfeld.getNeighbourKoords( koord );
+        
+        for( Koord neighbourKoord : neighbourKoords ) {
+            
+            // Falls eine Figur auf der Koordinate
+            // wird diese Koordinate aus der Liste entfernt
+            if( spielfeld.get( neighbourKoord ) != null ) {
+                
+                neighbourKoords.remove( neighbourKoord );
+            }   
+            
+        }
+        
+        return neighbourKoords;
+    }
+    
+    /**
+     * ermittelt alle freien Nachbarfelder die befahren werden dürfen
+     * Kaninchen dürfen nicht zurückfahren
+     * und es darf keine 3 fache Stellungswiederhohlung vorkommen
+     * und es muss eine Änderung zum vorheringen Zug erfolgen
+     * @param koord
+     * @return 
+     */
+    private ArrayList<Koord> validFreeNeighbours( Koord koord ) {
+        
+        ArrayList<Koord> neighbourKoords = getFreeNeighbours( koord );
+        
+        kaninchenRemoveKoordBehind( koord, neighbourKoords );
+        
+        return neighbourKoords;
+    }
+    
+    private void kaninchenRemoveKoordBehind( Koord koord, ArrayList<Koord> koords ) {
+        
+        // Falls sich dort überhaupt ein Kaninchen befindet
+        if( spielfeld.get( koord ).getTyp().equals( Typ.Kaninchen ) ) {
+            
+            for( Koord neighbourKoord : koords ) {
+                
+                // Falls Gold am Zug ist 
+                if( activePlayer.equals( Farbe.Gold ) ) {
+                    
+                    // Falls y < dem Ausgangs y
+                    if( neighbourKoord.y < koord.y ) {
+                        
+                        koords.remove( koord );
+                    }
+                    
+                } else {
+                    
+                    // Silber
+                    
+                    // Falls y > dem Ausgangs y
+                    if( neighbourKoord.y > koord.y ) {
+                        
+                        koords.remove( koord );
+                    }
+                }
+                
+            }
+        }
+        
+    }
+    
+    /**
+     * gewährleistet dass nicht dieselbe Stellung wie
+     * im vorherige Zug auftritt
+     * und dass es keine verbotene Stellung gibt
+     * @param koord
+     * @param koords 
+     */
+    private void stellungsaenderung( Koord koord, ArrayList<Koord> koords ) {
+        
+        for( Koord neighbourKoord : koords ) {
+            
+            Spielfeld spielfeld2 = spielfeld.copy();
+            
+            // probiert Schritt aus
+            spielfeld2.flip( koord, neighbourKoord );
+            
+            // vergleicht mit letztem Zug
+            // und prüft ob es eine verbotene Stellung ist
+            if( history.getLetzterEintrag().equals( spielfeld2 ) 
+                    || isVerboteneStellungen( spielfeld2 ) ) {
+                
+                koords.remove( neighbourKoord );
+            } 
+
+        }
+    }
+    
+    /**
+     * Prüft ob diese Stellung eine der verbotenen ist 
+     * @param feld
+     * @return verboten ?
+     */
+    private boolean isVerboteneStellungen( Spielfeld feld ) {
+        
+        boolean verboten = false;
+        
+        for( Spielfeld verboteneStellung : history.getVerboteneStellungen() ) {
+            
+            if( verboteneStellung.equals( feld ) ) {
+                
+                verboten = true;
+                break;
+            }
+        }
+        
+        return verboten;
     }
     
     public Spielfigur getCache() {
@@ -449,7 +637,7 @@ public class Arimaa2 {
     /**
      * Ruft je nachdem in welcher Phase man ist 
      * die zugehörige Methode auf
-     * @return ob wircklich fertig
+     * @return ob wirklich fertig
      */
     public boolean fertig() {
         
@@ -461,7 +649,7 @@ public class Arimaa2 {
         }
         
         // Schritt
-        return schrittFertig();
+        return zugFertig();
 
     }
     
@@ -530,6 +718,7 @@ public class Arimaa2 {
     
     /**
      * wechselt den Spieler
+     * und fügt spielfeld zur history hinzu
      */
     private void changeActivePlayer() {
         
@@ -540,6 +729,9 @@ public class Arimaa2 {
             
             activePlayer = Farbe.Gold;
         }
+        
+        history.addEntry( spielfeld );
+        
     }
     
     /**

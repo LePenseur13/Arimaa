@@ -66,9 +66,9 @@ public class Spielfigur {
     // -------------------------------------------------------------------------
     
     /**
-     * 
-     * @param andereFigur
-     * @return ob this stärker ist als die Vergleichsfigur
+     * ob this stärker ist als die Vergleichsfigur
+     * @param figur
+     * @return stärker?
      */
     public boolean isStronger( Spielfigur figur ) {
         return typ.isStronger( figur.typ );

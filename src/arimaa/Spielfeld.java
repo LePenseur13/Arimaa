@@ -49,6 +49,8 @@ public class Spielfeld {
         System.out.println( s );
         s.set( new Koord( 0, 1 ), new Spielfigur( Farbe.Silber, Typ.Katze ) );
         System.out.println( s );
+        Spielfeld s2 = s.copy();
+        System.out.println( s.equals( s2 ) );
         System.out.println( s.getFigurenAnzahl() );
         System.out.println( Arrays.toString( Spielfeld.getNeighbourKoords( new Koord( 7, 7 ) ).toArray() ) );
     }
@@ -224,14 +226,14 @@ public class Spielfeld {
     
     /**
      *
-     * @param AnderesFeld Feld mit dem verglichen wird
+     * @param spielfeld Feld mit dem verglichen wird
      * @return 
      * @throws IndexOutOfBoundsException
      * @author Alexander Holzinger
      * @version 1.0
      */
-    public boolean equals( Spielfeld AnderesFeld ) {
-        return Arrays.equals(this.feld, AnderesFeld.feld );
+    public boolean equals( Spielfeld spielfeld ) {
+        return Arrays.deepEquals( feld, spielfeld.feld );
     }
     
     /**

@@ -13,51 +13,93 @@ import java.util.ArrayList;
  * @author Marcus Gabler
  */
 public class History {
-    private ArrayList< Spielfeld > history = new ArrayList();
-    private Spielfeld spielfeld;
-    private Spielfeld letzterPruefungsEintrag;
+    
+    // -------------------------------------------------------------------------
+    // -------------------------- Attribute ------------------------------------
+    // -------------------------------------------------------------------------
+    
+    private ArrayList<Spielfeld> history = new ArrayList();
+    private ArrayList<Spielfeld> verboteneStellungen = new ArrayList();
+    private Spielfeld letzterEintrag;
+    
     private int figurenAnzahl;
-    private int i;
+    private int grenze;      // index bis zur letzten Figurenanzahländerung
     
-    private Koord letzteStartKoord;
-    private Spielfigur zuletztgezogeneFigur;
+    private Koord letzteStartKoord;             // benötigt für pull
+    private Spielfigur zuletztgezogeneFigur;    // benötigt für pull
     
-    //Konstruktoren
-    public History(Spielfeld spielfeld){
-        this.spielfeld = spielfeld;
-        this.figurenAnzahl = spielfeld.getFigurenAnzahl();
+    // -------------------------------------------------------------------------
+    // ---------------------- Konstruktoren ------------------------------------
+    // -------------------------------------------------------------------------
+    
+    public History(){
+        history = new ArrayList();
+        verboteneStellungen = new ArrayList();
     }
     
-    public void addEntry(){
-        history.add( spielfeld.copy() );
+    
+    // -------------------------------------------------------------------------
+    // --------------------------- METHODEN ------------------------------------
+    // -------------------------------------------------------------------------
+    
+    
+    // -------------------------------------------------------------------------
+    // --------------------------- ADDENTRY ------------------------------------
+    // -------------------------------------------------------------------------
+    
+    
+    /**
+     * Fügt eien Eintrag zur History hinzu
+     * @param spielfeld 
+     */
+    public void addEntry( Spielfeld spielfeld ){
+        
+        letzterEintrag = spielfeld.copy();
+        history.add( letzterEintrag );
         
         if ( spielfeld.getFigurenAnzahl() < this.figurenAnzahl ){
-            i = history.size() - 1;
+            
+            grenze = history.size() - 1;
             this.figurenAnzahl = spielfeld.getFigurenAnzahl();
-            letzterPruefungsEintrag = history.get( history.size() - 1 );
+            verboteneStellungen.clear();
+        }
+        
+        calculateVerboteneStellungen();
+    }
+    
+    
+    // -------------------------------------------------------------------------
+    // ------------------------ VERBOTENE STELLUNGE ----------------------------
+    // -------------------------------------------------------------------------
+    
+    
+    /**
+     * Ermittelt alle verbotenen Stellungen 
+     * Regel: eine Stellung darf nie 3 Mal auftreten
+     */
+    private void calculateVerboteneStellungen() {
+        
+        // Es ist nür nötig bis zu grenze 
+        // da ab dort eine andere Anzahl an 
+        // Figuren auf dem Feld ist
+        for( int i = history.size() - 1; i > grenze; i-- ) {
+            for( int j = i - 1; j >= grenze; j-- ) {
+                
+                // Falls zwei Spielfelder ident sind 
+                // werden sie zu den verbotenen Stellungen hinzugefügt
+                if( history.get( i ).equals( history.get( j ) ) ) {
+                    
+                    verboteneStellungen.add( history.get( i ) );
+                }
+            }
         }
     }
     
-    /*
-        Methode geht liste vom neuesten eintrag bis zum anfang der liste durch,
-        bricht aber auch beim erreichen des eintrags mit der letzten ver-
-        änderung (der spielfiguren-anzahl) ab.
-    */
-    public boolean isValid(Spielfeld spielfeld){
-        for (int i = history.size()-1; i >= 0; i-- ){
-            Spielfeld sf = history.get(i);
-            //wenn formation schon vorkommt
-            if (sf.equals(spielfeld)){
-                return false;
-            }
-            //Wenn EIntrag mit letzter Spielfiguren-Anzahl-Änderung erreicht
-            if (sf.equals(letzterPruefungsEintrag)){
-                i = -1;
-            }
-        }
-        return true;
-    }
-
+    // -------------------------------------------------------------------------
+    // ------------------------ GETTER, SETTER ---------------------------------
+    // -------------------------------------------------------------------------
+    
+    
     public Koord getLetzteStartKoord() {
         return letzteStartKoord;
     }
@@ -73,13 +115,24 @@ public class History {
     public void setZuletztgezogeneFigur(Spielfigur zuletztgezogeneFigur) {
         this.zuletztgezogeneFigur = zuletztgezogeneFigur;
     }
-    
-    
-    
-    @Override
-    public String toString() {
-        return "History{" + "history=" + history + ", spielfeld=" + spielfeld + ", letzterPruefungsEintrag=" + letzterPruefungsEintrag + ", living=" + figurenAnzahl + '}';
+
+    public Spielfeld getLetzterEintrag() {
+        return letzterEintrag;
+    }
+
+    public ArrayList<Spielfeld> getVerboteneStellungen() {
+        return verboteneStellungen;
     }
     
     
+    
+    // -------------------------------------------------------------------------
+    // --------------------------- TOSTRING ------------------------------------
+    // -------------------------------------------------------------------------
+
+    @Override
+    public String toString() {
+        return "History{" + "history=" + history + ", verboteneStellungen=" + verboteneStellungen + ", letzterEintrag=" + letzterEintrag + ", figurenAnzahl=" + figurenAnzahl + ", i=" + grenze + ", letzteStartKoord=" + letzteStartKoord + ", zuletztgezogeneFigur=" + zuletztgezogeneFigur + '}';
+    }
+
 }
