@@ -89,6 +89,11 @@ public class Arimaa2 {
         } while( gewinner == null );
     }
     
+    // -------------------------------------------------------------------------
+    // -------------------------- GUI ------------------------------------------
+    // -------------------------------------------------------------------------
+    
+    
     /**
      * Schnittstelle für die GUI
      * @param koord
@@ -260,6 +265,8 @@ public class Arimaa2 {
      * Je nachdem welcher Spieler mit dem Aufstellen an der Reihe ist
      * werden seine Figuren aufs Spielfeld gelegt
      */
+    
+    
     private void figurenAufsBrett() {
         
         // Stack mit sämtlichen Figuren exclusive Kaninchen
@@ -323,11 +330,36 @@ public class Arimaa2 {
     // ------------------------- Game ------------------------------------------
     // -------------------------------------------------------------------------
     
+    /**
+     * Prüft ob Koordinate gültig
+     * @param koord
+     * @return 
+     */
     private boolean checkKoordsGame( Koord koord ) {
-        boolean validity = true;
         
-        return validity; 
-    
+        boolean valid = false;
+        
+        // Startkoordinate
+        if( start == null ) {
+            
+            ArrayList<Koord> koords = getZielKoords( koord );
+            
+            // Falls es mödliche Ziele gibt
+            if( ! koords.isEmpty() ) {
+                
+                valid = true;
+                zielKoords = koords; 
+            }
+        } else {
+            
+            // Zielkoordinate 
+            
+            // falls koord ´ eine mögliche Zielkoordinate is
+            valid = zielKoords.contains( koord );
+            
+        }
+        
+        return valid;
     }
     
     /**
