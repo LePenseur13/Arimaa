@@ -5,7 +5,7 @@
  */
 package arimaa;
 
-//import gui.spielfeld;
+import gui.spielfeld;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -37,14 +37,14 @@ public class Arimaa2 {
     
     ArrayList<Koord> zielKoords;
     
-    //private final spielfeld guiReferenz;
+    private final spielfeld guiReferenz;
     
     // -------------------------------------------------------------------------
     // ---------------------- Konstruktoren ------------------------------------
     // -------------------------------------------------------------------------
     
-    public Arimaa2( /*spielfeld spielfeld*/ ) {
-        //guiReferenz = spielfeld;
+    public Arimaa2( spielfeld spielfeld ) {
+        guiReferenz = spielfeld;
         this.spielfeld = new Spielfeld();
         
         spielphase = Spielphase.Aufstellen;
@@ -52,7 +52,7 @@ public class Arimaa2 {
         activePlayer = Farbe.Gold;
         schritt = 1;
         
-        history = new History( spielfeld );
+        history = new History( this.spielfeld );
         
         figurenAufsBrett();
         
@@ -69,7 +69,7 @@ public class Arimaa2 {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Arimaa2 a = new Arimaa2();
+        Arimaa2 a = new Arimaa2( null );
         a.print();
         
         Farbe gewinner;
@@ -134,7 +134,7 @@ public class Arimaa2 {
             resetKoords();
             
             // Anzeigen
-            //guiReferenz.generiereFeld( spielfeld );
+            guiReferenz.generiereFeld( spielfeld );
             
             print();
             
@@ -218,7 +218,7 @@ public class Arimaa2 {
             }
         
             // Anzeigen
-            //guiReferenz.generiereFeld( spielfeld );
+            guiReferenz.generiereFeld( spielfeld );
             print();
         
         }
