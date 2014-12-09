@@ -5,9 +5,12 @@
  */
 package gui;
 
-import arimaa.Arimaa;
+import arimaa.Arimaa2;
+import arimaa.Farbe;
+import arimaa.Koord;
 import arimaa.Spielfeld;
 import arimaa.Spielfigur;
+import arimaa.Typ;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.FlowLayout;
@@ -19,7 +22,6 @@ import java.awt.Toolkit;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -39,11 +41,13 @@ public class spielfeld extends javax.swing.JPanel {
     int typenSetzenIndex = 0;
     String path = "C:\\Users\\Marcus\\Documents\\GitHub\\Arimaa\\src\\icons\\";
     
+    boolean showKoords = false;
+    
     //Eingabevariablen
     FeldPanel panelPressed;
     FeldPanel panelReleased;
 
-    Arimaa arimaa;
+    Arimaa2 arimaa;
     Spielfeld spielfeld;
     
     Spielfigur cursor;
@@ -54,10 +58,12 @@ public class spielfeld extends javax.swing.JPanel {
     public spielfeld() {
         initComponents();
         setBackground(Color.white);
-        arimaa = new Arimaa(this);
-        arimaa.print();
-        spielfeld = arimaa.getSpielFeld();
-        spielfeld.set("A1", new Spielfigur("Gold", "Elefant"));
+        arimaa = new Arimaa2(/*this*/);
+        spielfeld = arimaa.spielfeld;
+        //arimaa.print();
+        //spielfeld = arimaa.getSpielFeld();
+        //spielfeld.set(new Koord("A1"), new Spielfigur(Farbe.valueOf("Gold"),Typ.valueOf("Elefant")));
+        //generiereFeld(spielfeld);
     }
 
     public void generiereFeld(Spielfeld spielfeld) {
@@ -94,10 +100,12 @@ public class spielfeld extends javax.swing.JPanel {
                 }
                 current.setSize(50, 50);
                 if (i > 0 && j > 0 && i <= 8 && j <= 8) {
-                    if (spielfeld.get(j-1, i-1) != null) {
+                    Koord k = new Koord(j-1, i-1);
+                    if (spielfeld.get(k) != null) {
                         printIcon(current, j-1, i-1);
-                    } else {
-                        current.add(new JLabel(current.x + ", " + current.y));
+                    }
+                    if (showKoords){
+                       current.add(new JLabel(current.x + ", " + current.y)); 
                     }
                 }
                 //current.updateUI();
@@ -105,16 +113,42 @@ public class spielfeld extends javax.swing.JPanel {
             }  
         }
     }
+    
+    public void generiereFeldUpdate(Spielfeld spielfeld){
+        if (spielfeld == null){
+            spielfeld = this.spielfeld;
+        }
+        for (FeldPanel [] fpArr : chessboard){
+            for (FeldPanel fp : fpArr){
+                int x = fp.x;
+                int y = fp.y;
+                if (x >= 0 && y >= 0){
+                    Spielfigur sf = spielfeld.get(new Koord(x, y));                    
+                    if (sf != null){
+                        fp.removeAll();
+                        printIcon(fp, x, y);
+                        fp.updateUI();
+                    } else {
+                        fp.removeAll();
+                        fp.background = fp.background;
+                    }
+                    if (showKoords){
+                       fp.add(new JLabel(fp.x + ", " + fp.y)); 
+                    }
+                    updateUI();
+                }
+            }
+        }
+    }
+    
+    public void generiereFeldUpdate(Koord k1, Koord k2){
+        
+    }
 
     public void printIcon(FeldPanel current, int i, int j) {
-        Spielfigur sf = spielfeld.get(i, j);
-        String[] typen = {"Elefant", "Kamel", "Pferd", "Hund", "Katze", "Kaninchen"};
-        for (String typ : typen) {
-            if (sf.compareTo(new Spielfigur("Gold", typ)) == 0) {
-                setzeFigur(current, typ, sf.getFarbe().toString(), i, j);
-                break;
-            }
-        } 
+        Koord k = new Koord(i, j);
+        Spielfigur sf = spielfeld.get(k);
+        setzeFigur(current, sf.getTyp().name(), sf.getFarbe().name(), i, j);
     }
     
     public void setKoords(FeldPanel current, int x, int y){
@@ -207,7 +241,19 @@ public class spielfeld extends javax.swing.JPanel {
         panelReleased = (FeldPanel) getComponentAt(x, y);
         x = panelReleased.x;
         y = panelReleased.y;
-        //arimaa.setKoords(x, y);
+        try {
+            Koord k = new Koord(x, y);
+            arimaa.setKords(k);
+            if (arimaa.getCache() != null){
+                cursor = arimaa.getCache();
+            }
+            
+            //generiereFeld(spielfeld);
+            generiereFeldUpdate(null);
+        } catch (IllegalArgumentException e){
+            
+        }
+        
     }
 
     public void setCursor(Spielfigur sf){
@@ -219,13 +265,31 @@ public class spielfeld extends javax.swing.JPanel {
     }
     
     private void formMousePressed(java.awt.event.MouseEvent evt){
-        cursor = new Spielfigur("Gold", "Elefant");
         int x = evt.getX();
         int y = evt.getY();
         panelPressed = (FeldPanel) getComponentAt(x, y);
         x = panelPressed.x;
         y = panelPressed.y;
-        //arimaa.setKoord(x, y);
+        try {
+            Koord k = new Koord(x, y);
+            arimaa.setKords(k);
+            if (arimaa.getCache() != null){
+                cursor = arimaa.getCache();
+            }
+            //generiereFeld(spielfeld);
+            generiereFeldUpdate(null);
+        } catch (IllegalArgumentException e){
+            
+        }
+    }
+    
+    public boolean aufstellenFertig(){
+        boolean b =  arimaa.fertig();
+        if (b){
+            removeAll();
+            generiereFeld(spielfeld);
+        }
+        return b;
     }
     }//GEN-LAST:event_formMouseReleased
 /*

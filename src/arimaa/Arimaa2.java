@@ -361,8 +361,13 @@ public class Arimaa2 {
         // eigene Figur
         if( figur.getFarbe().equals( activePlayer ) ) {
             
-            
-            
+            // Darf die Figur sich bewegen oder ist sie festgehalten
+            if( isMoveable( koord ) ) {
+               
+                
+                
+            }
+
         } else {
             
             // fremde Figur
@@ -417,6 +422,7 @@ public class Arimaa2 {
         
         for( Koord neighbourKoord : neighbourKoords ) {
             
+            // Festgehalten ?
             if( spielfeld.get( neighbourKoord ).getFarbe() != activePlayer 
                 && spielfeld.get( neighbourKoord ).isStronger( figur ) ) {
                             
@@ -424,12 +430,14 @@ public class Arimaa2 {
                             
             } else if( spielfeld.get( neighbourKoord ).getFarbe() == figur.getFarbe() ){
                 
+                // hat eine Figur der eigenen Farbe als Nachbar
                 beschuetzt = true;
                 
             }   
             
         }
         
+        // Nur wenn festgehalten und nicht beschützt dann false
         
         return ! ( festgehalten && ! beschuetzt );
     }
@@ -450,7 +458,6 @@ public class Arimaa2 {
         if( spielphase.equals( Spielphase.Aufstellen ) ) {
             
             return aufstellenFertig();
-        
         }
         
         // Schritt
