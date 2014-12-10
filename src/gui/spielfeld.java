@@ -22,6 +22,7 @@ import java.awt.LayoutManager;
 import java.awt.LayoutManager2;
 import java.awt.Point;
 import java.awt.Toolkit;
+import java.util.Random;
 import javax.print.event.PrintJobEvent;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -45,7 +46,9 @@ public class spielfeld extends javax.swing.JPanel {
     String[] typen = {"Elefant", "Kamel", "Pferd", "Hund", "Katze", "Kaninchen"};
     String[] typensetzen = {"Elefant", "Kamel", "Pferd", "Pferd", "Hund", "Hund", "Katze", "Katze"};
     int typenSetzenIndex = 0;
-    String path = "C:\\Users\\Marcus\\Documents\\GitHub\\Arimaa\\src\\icons\\";
+    //String path = "C:\\Users\\Marcus\\Documents\\GitHub\\Arimaa\\src\\icons\\";
+    String path = "C:\\Users\\Marcus\\Documents\\GitHub\\Arimaa\\src\\icons_new\\";
+    String path2 = "C:\\Users\\Marcus\\Documents\\NetBeansProjects\\Arimaa\\src\\design_package\\backgrounds\\";
     
     boolean showKoords = false;
     
@@ -73,6 +76,7 @@ public class spielfeld extends javax.swing.JPanel {
     }
 
     public void generiereFeld(Spielfeld spielfeld) {
+        //Random r = new Random();
         if (spielfeld == null){
             spielfeld = this.spielfeld;
         }
@@ -91,7 +95,7 @@ public class spielfeld extends javax.swing.JPanel {
                         current.add(new JLabel(Character.toString(c)));
                         c++;
                     }
-                    current.setBackground(Color.BLACK);
+                    current.setBackground(Color.WHITE);
                 } else if (j == 0) {
                     current.add(new JLabel(Integer.toString(i)));
                     current.setBackground(koords);
@@ -103,6 +107,8 @@ public class spielfeld extends javax.swing.JPanel {
                         current.setBackground(silber);
                         current.background = silber;
                     }
+                    //current.add(new JLabel(new ImageIcon(path2+"background"+r.nextInt(12))));
+                    //current.repaint();
                 }
                 current.setSize(50, 50);
                 if (i > 0 && j > 0 && i <= 8 && j <= 8) {

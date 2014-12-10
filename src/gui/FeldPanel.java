@@ -8,6 +8,9 @@ package gui;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.util.Random;
 
 /**
  *
@@ -16,22 +19,33 @@ import java.awt.Graphics;
 public class FeldPanel extends javax.swing.JPanel {
 
     Color background;
+    String backGround;
     boolean empty = true;
     String typ;
     String farbe;
     int x;
     int y;
+    Random r;
+    String path2 = "C:\\Users\\Marcus\\Documents\\NetBeansProjects\\Arimaa\\src\\design_package\\backgrounds\\";
     
     /**
      * Creates new form FeldPanel
      */
     public FeldPanel() {
         initComponents();
+        r = new Random();
+    }
+    
+    public void setBackground(String s){
+        if (r != null) {
+            Image background = Toolkit.getDefaultToolkit().createImage(path2+"background"+r.nextInt(12));
+            //g.drawImage(background, 0, 0, this);
+        }
     }
     
     protected void paintComponent(Graphics g){
         super.paintComponent(g);
-        setBackground(background);
+        //paintBackground(g);
     }
 
     /**
