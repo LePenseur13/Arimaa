@@ -48,7 +48,7 @@ public class spielfeld extends javax.swing.JPanel {
     int typenSetzenIndex = 0;
     //String path = "C:\\Users\\Marcus\\Documents\\GitHub\\Arimaa\\src\\icons\\";
     String path = "C:\\Users\\Marcus\\Documents\\GitHub\\Arimaa\\src\\icons_new\\";
-    String path2 = "C:\\Users\\Marcus\\Documents\\NetBeansProjects\\Arimaa\\src\\design_package\\backgrounds\\";
+    String path2 = "C:\\Users\\Marcus\\Documents\\GitHub\\Arimaa\\src\\backgrounds\\";
     
     boolean showKoords = false;
     
@@ -77,7 +77,7 @@ public class spielfeld extends javax.swing.JPanel {
     }
 
     public void generiereFeld(Spielfeld spielfeld) {
-        //Random r = new Random();
+        Random r = new Random();
         if (spielfeld == null){
             spielfeld = this.spielfeld;
         }
@@ -100,16 +100,18 @@ public class spielfeld extends javax.swing.JPanel {
                 } else if (j == 0) {
                     current.add(new JLabel(Integer.toString(i)));
                     current.setBackground(koords);
-                } else {
+                } else {/*
                     if (((i + j) % 2) == 0) {
                         current.setBackground(gold);
                         current.background = gold;
                     } else {
                         current.setBackground(silber);
                         current.background = silber;
-                    }
+                    }*/
                     //current.add(new JLabel(new ImageIcon(path2+"background"+r.nextInt(12))));
                     //current.repaint();
+                    String background = path2+"background"+r.nextInt(12);
+                    current.setBackground(background);
                 }
                 current.setSize(50, 50);
                 if (i > 0 && j > 0 && i <= 8 && j <= 8) {
@@ -128,6 +130,7 @@ public class spielfeld extends javax.swing.JPanel {
     }
     
     public void generiereFeldUpdate(Spielfeld spielfeld){
+        int i=1;
         if (spielfeld == null){
             spielfeld = this.spielfeld;
         }
@@ -143,10 +146,14 @@ public class spielfeld extends javax.swing.JPanel {
                         fp.updateUI();
                     } else {
                         fp.removeAll();
-                        fp.background = fp.background;
+                        //fp.background = fp.background;
+                        fp.repaint();
                     }
                     if (((fp.x + 1) % 3) == 0 && ((fp.y + 1) % 3) == 0) {
-                        fp.background = new Color(220, 50, 50);
+                        //fp.background = new Color(220, 50, 50);
+                        fp.setBackground(path2+"death"+i);
+                        fp.repaint();
+                        i++;
                     }
                     if (showKoords){
                        fp.add(new JLabel(fp.x + ", " + fp.y)); 

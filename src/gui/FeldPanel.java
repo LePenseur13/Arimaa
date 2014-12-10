@@ -11,6 +11,8 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.util.Random;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 
 /**
  *
@@ -37,15 +39,21 @@ public class FeldPanel extends javax.swing.JPanel {
     }
     
     public void setBackground(String s){
-        if (r != null) {
-            Image background = Toolkit.getDefaultToolkit().createImage(path2+"background"+r.nextInt(12));
-            //g.drawImage(background, 0, 0, this);
+        backGround = s;
+    }
+    
+
+    
+    public void paintBackground(Graphics g){
+        if (backGround != null){
+            Image background = Toolkit.getDefaultToolkit().createImage(backGround);
+            g.drawImage(background, 0, 0, this);
         }
     }
     
     protected void paintComponent(Graphics g){
         super.paintComponent(g);
-        //paintBackground(g);
+        paintBackground(g);
     }
 
     /**
