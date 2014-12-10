@@ -22,10 +22,12 @@ import java.awt.LayoutManager;
 import java.awt.LayoutManager2;
 import java.awt.Point;
 import java.awt.Toolkit;
+import javax.print.event.PrintJobEvent;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -43,7 +45,7 @@ public class spielfeld extends javax.swing.JPanel {
     String[] typen = {"Elefant", "Kamel", "Pferd", "Hund", "Katze", "Kaninchen"};
     String[] typensetzen = {"Elefant", "Kamel", "Pferd", "Pferd", "Hund", "Hund", "Katze", "Katze"};
     int typenSetzenIndex = 0;
-    String path = "C:\\Users\\JosefChristoph\\Documents\\GitHub\\Arimaa\\src\\icons\\";
+    String path = "C:\\Users\\Marcus\\Documents\\GitHub\\Arimaa\\src\\icons\\";
     
     boolean showKoords = false;
     
@@ -247,13 +249,17 @@ public class spielfeld extends javax.swing.JPanel {
         y = panelReleased.y;
         try {
             Koord k = new Koord(x, y);
-            arimaa.setKords(k);
-            if (arimaa.getCache() != null){
+            cursor = spielfeld.get(k);
+            boolean showCursor = arimaa.setKords(k);
+            /*if (showCursor){
+                cursor = spielfeld.get(k);
+            } else*/ if (arimaa.getCache() != null){
                 cursor = arimaa.getCache();
             } else {
                 cursor = null;
+                formMouseMoved(evt);
             }
-            
+            formMouseMoved(evt);
             //generiereFeld(spielfeld);
             generiereFeldUpdate(null);
         } catch (IllegalArgumentException e){
@@ -278,12 +284,15 @@ public class spielfeld extends javax.swing.JPanel {
         y = panelPressed.y;
         try {
             Koord k = new Koord(x, y);
-            arimaa.setKords(k);
-            if (arimaa.getCache() != null){
+            boolean showCursor = arimaa.setKords(k);
+            if (showCursor){
+                cursor = spielfeld.get(k);
+            } else if (arimaa.getCache() != null){
                 cursor = arimaa.getCache();
             } else {
                 cursor = null;
             }
+            formMouseMoved(evt);
             //generiereFeld(spielfeld);
             generiereFeldUpdate(null);
         } catch (IllegalArgumentException e){
