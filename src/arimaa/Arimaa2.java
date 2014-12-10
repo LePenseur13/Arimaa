@@ -134,7 +134,7 @@ public class Arimaa2 {
             
             resetKoords();
             
-            zielKoords = null;
+            //zielKoords = null;
             
             // Anzeigen
             guiReferenz.generiereFeldUpdate( spielfeld );
@@ -403,7 +403,7 @@ public class Arimaa2 {
         boolean valid = false;
         
         // Startkoordinate
-        if( start == null ) {
+        if( start == null && cache == null ) {
             
             ArrayList<Koord> koords = getZielKoords( koord );
             
@@ -419,6 +419,12 @@ public class Arimaa2 {
             
             // falls koord eine mögliche Zielkoordinate ist
             valid = zielKoords.contains( koord );
+            
+            // Falls nicht gültig wird zurückgesetzt
+            if( ! valid ) {
+                
+                resetKoords();
+            }
             
         }
         
@@ -455,13 +461,15 @@ public class Arimaa2 {
      */
     private boolean checkZugFertig() {
         
-        // Wenn dies keine verbotene Stellung ist
-        boolean valid = ! isVerboteneStellungen( spielfeld );
+        // Nur möglich in den letzten 3 Schritten
+        boolean valid = schritt > 1;
         
-        if( cache != null ) {
-            
-            valid = false;
-        }
+        
+        // Wenn dies keine verbotene Stellung ist
+        valid &= ! isVerboteneStellungen( spielfeld );
+        
+        // Nur wenn cache nicht gesetzt
+        valid &= cache == null;
         
         return valid;
     }
@@ -588,28 +596,38 @@ public class Arimaa2 {
         
         Spielfigur figur = spielfeld.get( koord );
         
-        for( int i = neighbourKoords.size() - 1; i >= 0; i-- ) {
+        // Nur in den ersten 3 Schritten
+        if( schritt < 4 ) {
             
-            // Falls auf dem Feld eine schwächere Figur des Gegners
-            if( spielfeld.get( neighbourKoords.get( i ) ) != null 
-                && spielfeld.get( neighbourKoords.get( i ) ).getFarbe() != activePlayer 
-                && figur.isStronger( spielfeld.get( neighbourKoords.get( i ) ) ) ) {
-                
-                // Falls die zu schiebende Figur keine freien Nachbarfelder besitzt
-                // Wird auch diese Koordinate entfernt
-                if( getFreeNeighbours( neighbourKoords.get( i ) ).isEmpty() ) {
+            for( int i = neighbourKoords.size() - 1; i >= 0; i-- ) {
+            
+                // Falls auf dem Feld eine schwächere Figur des Gegners
+                if( spielfeld.get( neighbourKoords.get( i ) ) != null 
+                    && spielfeld.get( neighbourKoords.get( i ) ).getFarbe() != activePlayer 
+                    && figur.isStronger( spielfeld.get( neighbourKoords.get( i ) ) ) ) {
                     
+                    // Falls die zu schiebende Figur keine freien Nachbarfelder besitzt
+                    // Wird auch diese Koordinate entfernt
+                    if( getFreeNeighbours( neighbourKoords.get( i ) ).isEmpty() ) {
+                        
+                        neighbourKoords.remove( neighbourKoords.get( i ) );
+                    }
+                    
+                }else {
+                    
+                    // Falls nicht wird Koordinate einfach aus der LIste entfernt
                     neighbourKoords.remove( neighbourKoords.get( i ) );
+                    
                 }
-                
-            }else {
-                
-                // Falls nicht wird Koordinate einfach aus der LIste entfernt
-                neighbourKoords.remove( neighbourKoords.get( i ) );
-                
+            
             }
             
+        } else {
+            
+            // keiner ist gültig
+            neighbourKoords.clear();
         }
+        
         
         return neighbourKoords;
     }
@@ -711,10 +729,8 @@ public class Arimaa2 {
             // probiert Schritt aus
             spielfeld2.flip( koord, koords.get( i ) );
             
-            // vergleicht mit letztem Zug
-            // und prüft ob es eine verbotene Stellung ist
-            if( history.getLetzterEintrag().equals( spielfeld2 ) 
-                    || isVerboteneStellungen( spielfeld2 ) ) {
+            // prüft ob es eine verbotene Stellung ist
+            if( isVerboteneStellungen( spielfeld2 ) ) {
                 
                 koords.remove( i );
 
@@ -762,6 +778,9 @@ public class Arimaa2 {
             // setzt Figur auf Zielfeld
             spielfeld.set( ziel, cache );
             cache = null;
+            
+            // zählt dern Schritt hoch
+            nextSchritt();
          
 
         } else {
@@ -794,12 +813,11 @@ public class Arimaa2 {
         // Schlussendlich der Tatsächliche Schritt
 
         spielfeld.flip( start, ziel );
+
+        } 
         
         // Fallenfelder prüfen
-        
         fallenFelderCheck();
-        
-        } 
     }
     
     /**

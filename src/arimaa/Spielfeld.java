@@ -51,6 +51,9 @@ public class Spielfeld {
         System.out.println( s );
         Spielfeld s2 = s.copy();
         System.out.println( s.equals( s2 ) );
+        System.out.println( s == s2 );
+        s2.flip( new Koord( 0, 1 ), new Koord( 0, 1 ) );
+        System.out.println( s2 );
         System.out.println( s.getFigurenAnzahl() );
         System.out.println( Arrays.toString( Spielfeld.getNeighbourKoords( new Koord( 7, 7 ) ).toArray() ) );
     }

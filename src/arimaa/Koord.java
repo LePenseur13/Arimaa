@@ -98,7 +98,7 @@ public class Koord {
         
         final Koord other = (Koord) obj;
         
-        if ( this.x != other.x && this.y != other.y ) {
+        if ( this.x != other.x || this.y != other.y ) {
             return false;
         }
         
