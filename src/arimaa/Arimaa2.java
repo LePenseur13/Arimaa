@@ -54,7 +54,7 @@ public class Arimaa2 {
         figurenAufsBrett();
         
         // Anzeigen
-        //guiReferenz.generiereFeldUpdate( spielfeld );
+        //guiReferenz.generiereFeldUpdate( this.spielfeld );
         print();
     }
     
@@ -133,6 +133,8 @@ public class Arimaa2 {
             makeMove();
             
             resetKoords();
+            
+            zielKoords.clear();
             
             // Anzeigen
             guiReferenz.generiereFeldUpdate( spielfeld );
@@ -775,6 +777,8 @@ public class Arimaa2 {
                     // Figur wird vom Spielfeld genommen
                     cache = spielfeld.del( ziel );
                     
+                    // Setzt die Zielfelder für die gegnerische Figur
+                    zielKoords = getFreeNeighbours( ziel );
                 }
                 
                 // eintrag in History 
@@ -847,6 +851,8 @@ public class Arimaa2 {
             
         }
         
+        cache = null;
+        resetKoords();
         history.addEntry( spielfeld );
         
     }
