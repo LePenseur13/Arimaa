@@ -24,7 +24,7 @@ public class Arimaa {
 //    final String[] fallenFelder = { "c3", "f3", "c6", "f6" };
 //    
 //    private Farbe activePlayer;
-//    
+//    ll
 //    //Konstruktoren
 //    public Arimaa() {
 //        spielfeld = new Spielfeld();

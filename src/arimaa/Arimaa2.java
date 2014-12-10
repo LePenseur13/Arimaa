@@ -134,7 +134,7 @@ public class Arimaa2 {
             
             resetKoords();
             
-            zielKoords.clear();
+            zielKoords = null;
             
             // Anzeigen
             guiReferenz.generiereFeldUpdate( spielfeld );
@@ -795,6 +795,10 @@ public class Arimaa2 {
 
         spielfeld.flip( start, ziel );
         
+        // Fallenfelder prüfen
+        
+        fallenFelderCheck();
+        
         } 
     }
     
@@ -816,6 +820,59 @@ public class Arimaa2 {
             // 
             schritt++;
         }
+    }
+    // -------------------------------------------------------------------------
+    // ------------------------ FALLEFELDER ------------------------------------
+    // -------------------------------------------------------------------------
+
+    
+    /**
+     * Prüft alle Fallenfelder( c3, c6, f3, f6 )
+     * ob eine Figur auf dem jeweiligen Feld steht
+     * und ob sie durch eine gleichfarbige Figur gehalten wird
+     * falls nicht wird sie entfernt 
+     */
+    public void fallenFelderCheck(){
+        
+        final Koord[] fallenFelder = { new Koord( "c3" ), new Koord( "f3" ), new Koord( "c6" ), new Koord( "f6" ) };
+        
+       //Am Ende des Verfahrens wird entschieden, ob das Opfer für schuldig erklärt wird
+        //und aus dem öfffentlichen Lebe in eine Irrenanstalt für geistig behinderte
+        //eingeliefert wird.
+        
+        boolean schuldig = true;
+        
+        //Jede TodesStelle wird untersucht
+        for ( Koord todesStelle : fallenFelder ){
+            
+            Spielfigur opfer = spielfeld.get( todesStelle );
+            
+            if ( opfer != null ){
+                
+                //Das Opfer ist die erste Person die Aussagt
+                Farbe aussage = opfer.getFarbe();
+                
+                //Zeugen werden ins Gericht geholt
+                ArrayList<Spielfigur> zeugen = spielfeld.getNeighbours( todesStelle );
+                
+                //Zeugen machen ihre Aussagen, es reicht wenn nur einer von ihnen 
+                //für das Opfer aussagt und die Aussage des Opfer bestätig
+                for( Spielfigur zeuge : zeugen ) {
+                    
+                    if( zeuge.getFarbe().equals( aussage ) ){
+                        
+                        schuldig = false;
+                        break;
+                    }
+                }
+                
+                // Falls schuldig wird das Urteil vollstreckt
+                if ( schuldig ){
+                    
+                    spielfeld.set(todesStelle, null);
+                }
+            }
+       }
     }
     
     // -------------------------------------------------------------------------
@@ -852,7 +909,6 @@ public class Arimaa2 {
         }
         
         cache = null;
-        resetKoords();
         history.addEntry( spielfeld );
         
     }
