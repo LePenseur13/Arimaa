@@ -67,6 +67,7 @@ public class spielfeld extends javax.swing.JPanel {
     public spielfeld() {
         initComponents();
         setBackground(Color.white);
+        setSize(500, 500);
         arimaa = new Arimaa2(this);
         spielfeld = arimaa.spielfeld;
         //arimaa.print();

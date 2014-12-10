@@ -47,7 +47,7 @@ public class ArimaaGUI extends javax.swing.JFrame {
         jPanel3.setBackground(Color.white);
         setResizable(false);
         Toolkit tk = Toolkit.getDefaultToolkit();
-        int xSize = ((int) tk.getScreenSize().getWidth());  
+        int xSize = ((int) tk.getScreenSize().getWidth());
         int ySize = ((int) tk.getScreenSize().getHeight());
         //setMaximumSize(new Dimension(700, 543));
         //setMinimumSize(new Dimension(700, 543));
