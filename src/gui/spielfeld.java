@@ -138,6 +138,9 @@ public class spielfeld extends javax.swing.JPanel {
                         fp.removeAll();
                         fp.background = fp.background;
                     }
+                    if (((fp.x + 1) % 3) == 0 && ((fp.y + 1) % 3) == 0) {
+                        fp.background = new Color(220, 50, 50);
+                    }
                     if (showKoords){
                        fp.add(new JLabel(fp.x + ", " + fp.y)); 
                     }
