@@ -79,4 +79,31 @@ public class Koord {
     public String toString() {
         return "Koord{" + "x=" + x + ", y=" + y + '}';
     }
+    
+    // -------------------------------------------------------------------------
+    // --------------------------- EQUALS --------------------------------------
+    // -------------------------------------------------------------------------
+
+    
+    @Override
+    public boolean equals( Object obj ) {
+        
+        if (obj == null) {
+            return false;
+        }
+        
+        if ( getClass() != obj.getClass() ) {
+            return false;
+        }
+        
+        final Koord other = (Koord) obj;
+        
+        if ( this.x != other.x && this.y != other.y ) {
+            return false;
+        }
+        
+        return true;
+    }
+    
+    
 }

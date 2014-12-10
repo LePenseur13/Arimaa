@@ -586,24 +586,24 @@ public class Arimaa2 {
         
         Spielfigur figur = spielfeld.get( koord );
         
-        for( Koord neighbourKoord : neighbourKoords ) {
+        for( int i = neighbourKoords.size() - 1; i >= 0; i-- ) {
             
             // Falls auf dem Feld eine schwächere Figur des Gegners
-            if( spielfeld.get( neighbourKoord ) != null 
-                && spielfeld.get( neighbourKoord ).getFarbe() != activePlayer 
-                && figur.isStronger( spielfeld.get( neighbourKoord ) ) ) {
+            if( spielfeld.get( neighbourKoords.get( i ) ) != null 
+                && spielfeld.get( neighbourKoords.get( i ) ).getFarbe() != activePlayer 
+                && figur.isStronger( spielfeld.get( neighbourKoords.get( i ) ) ) ) {
                 
                 // Falls die zu schiebende Figur keine freien Nachbarfelder besitzt
                 // Wird auch diese Koordinate entfernt
-                if( getFreeNeighbours( neighbourKoord ).isEmpty() ) {
+                if( getFreeNeighbours( neighbourKoords.get( i ) ).isEmpty() ) {
                     
-                    neighbourKoords.remove( neighbourKoord );
+                    neighbourKoords.remove( neighbourKoords.get( i ) );
                 }
                 
             }else {
                 
                 // Falls nicht wird Koordinate einfach aus der LIste entfernt
-                neighbourKoords.remove( neighbourKoord );
+                neighbourKoords.remove( neighbourKoords.get( i ) );
                 
             }
             
@@ -621,13 +621,13 @@ public class Arimaa2 {
         
         ArrayList<Koord> neighbourKoords = Spielfeld.getNeighbourKoords( koord );
         
-        for( Koord neighbourKoord : neighbourKoords ) {
+        for( int i = neighbourKoords.size() - 1; i >= 0; i-- ) {
             
             // Falls eine Figur auf der Koordinate
             // wird diese Koordinate aus der Liste entfernt
-            if( spielfeld.get( neighbourKoord ) != null ) {
+            if( spielfeld.get( neighbourKoords.get( i ) ) != null ) {
                 
-                neighbourKoords.remove( neighbourKoord );
+                neighbourKoords.remove( i );
             }   
             
         }
@@ -649,6 +649,8 @@ public class Arimaa2 {
         
         kaninchenRemoveKoordBehind( koord, neighbourKoords );
         
+        stellungsaenderung( koord, neighbourKoords );
+        
         return neighbourKoords;
     }
     
@@ -664,13 +666,13 @@ public class Arimaa2 {
         // Falls sich dort überhaupt ein Kaninchen befindet
         if( spielfeld.get( koord ).getTyp().equals( Typ.Kaninchen ) ) {
             
-            for( Koord neighbourKoord : koords ) {
+            for( int i = koords.size() - 1; i >= 0; i-- ) {
                 
                 // Falls Gold am Zug ist 
                 if( activePlayer.equals( Farbe.Gold ) ) {
                     
                     // Falls y < dem Ausgangs y
-                    if( neighbourKoord.y < koord.y ) {
+                    if( koords.get( i ).y < koord.y ) {
                         
                         koords.remove( koord );
                     }
@@ -680,7 +682,7 @@ public class Arimaa2 {
                     // Silber
                     
                     // Falls y > dem Ausgangs y
-                    if( neighbourKoord.y > koord.y ) {
+                    if( koords.get( i ).y > koord.y ) {
                         
                         koords.remove( koord );
                     }
@@ -700,19 +702,20 @@ public class Arimaa2 {
      */
     private void stellungsaenderung( Koord koord, ArrayList<Koord> koords ) {
         
-        for( Koord neighbourKoord : koords ) {
+        for( int i = koords.size() - 1; i >= 0; i-- ) {
             
             Spielfeld spielfeld2 = spielfeld.copy();
             
             // probiert Schritt aus
-            spielfeld2.flip( koord, neighbourKoord );
+            spielfeld2.flip( koord, koords.get( i ) );
             
             // vergleicht mit letztem Zug
             // und prüft ob es eine verbotene Stellung ist
             if( history.getLetzterEintrag().equals( spielfeld2 ) 
                     || isVerboteneStellungen( spielfeld2 ) ) {
                 
-                koords.remove( neighbourKoord );
+                koords.remove( i );
+
             } 
 
         }
