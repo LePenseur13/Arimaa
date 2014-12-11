@@ -7,7 +7,6 @@
 package gui;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Toolkit;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -214,6 +213,7 @@ public class ArimaaGUI extends javax.swing.JFrame {
     private void neuesSpiel(){
         spielLäuft = true;
         spielfeld1.generiereFeld(null);
+        spielfeld1.generiereFeldUpdate(null);
     }
     
     /**

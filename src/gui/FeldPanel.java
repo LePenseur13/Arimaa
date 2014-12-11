@@ -8,11 +8,11 @@ package gui;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.Random;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -28,7 +28,7 @@ public class FeldPanel extends javax.swing.JPanel {
     int x;
     int y;
     Random r;
-    String path2 = "C:\\Users\\Marcus\\Documents\\NetBeansProjects\\Arimaa\\src\\design_package\\backgrounds\\";
+    String path2 = "C:\\Users\\Marcus\\Documents\\GitHub\\Arimaa\\src\\backgrounds\\";
     
     /**
      * Creates new form FeldPanel
@@ -41,13 +41,15 @@ public class FeldPanel extends javax.swing.JPanel {
     public void setBackground(String s){
         backGround = s;
     }
-    
-
-    
+ 
     public void paintBackground(Graphics g){
         if (backGround != null){
-            Image background = Toolkit.getDefaultToolkit().createImage(backGround);
-            g.drawImage(background, 0, 0, this);
+            try {
+                BufferedImage background = javax.imageio.ImageIO.read(new File(backGround));
+                g.drawImage(background, 0, 0, this);
+            } catch (IOException e) {
+                System.out.println("Background " + backGround + "nicht gefunden!");
+            }
         }
     }
     

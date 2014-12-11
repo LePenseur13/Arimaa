@@ -110,8 +110,11 @@ public class spielfeld extends javax.swing.JPanel {
                     }*/
                     //current.add(new JLabel(new ImageIcon(path2+"background"+r.nextInt(12))));
                     //current.repaint();
-                    String background = path2+"background"+r.nextInt(12);
+                    int count = r.nextInt(11);
+                    count++;
+                    String background = path2+"background"+count+".png";
                     current.setBackground(background);
+                    current.repaint();
                 }
                 current.setSize(50, 50);
                 if (i > 0 && j > 0 && i <= 8 && j <= 8) {
@@ -130,6 +133,7 @@ public class spielfeld extends javax.swing.JPanel {
     }
     
     public void generiereFeldUpdate(Spielfeld spielfeld){
+        Random r = new Random();
         int i=1;
         if (spielfeld == null){
             spielfeld = this.spielfeld;
@@ -151,7 +155,7 @@ public class spielfeld extends javax.swing.JPanel {
                     }
                     if (((fp.x + 1) % 3) == 0 && ((fp.y + 1) % 3) == 0) {
                         //fp.background = new Color(220, 50, 50);
-                        fp.setBackground(path2+"death"+i);
+                        fp.setBackground(path2+"death"+i+".png");
                         fp.repaint();
                         i++;
                     }
