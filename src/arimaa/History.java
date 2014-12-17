@@ -6,13 +6,14 @@
 
 package arimaa;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  *
  * @author Marcus Gabler
  */
-public class History {
+public class History implements Serializable{
     
     // -------------------------------------------------------------------------
     // -------------------------- Attribute ------------------------------------

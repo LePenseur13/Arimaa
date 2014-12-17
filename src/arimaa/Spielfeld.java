@@ -5,6 +5,7 @@
  */
 package arimaa;
 
+import java.io.Serializable;
 import static java.lang.Math.abs;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,7 +15,7 @@ import java.util.Arrays;
  * @author Alexander Holzinger
  * @version 1.0
  */
-public class Spielfeld {
+public class Spielfeld implements Serializable {
     
     // -------------------------------------------------------------------------
     // -------------------------- Attribute ------------------------------------

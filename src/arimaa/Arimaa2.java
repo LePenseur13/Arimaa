@@ -6,9 +6,16 @@
 package arimaa;
 
 import gui.spielfeld;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Stack;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -35,7 +42,7 @@ public class Arimaa2 implements Serializable {
     
     ArrayList<Koord> zielKoords;
     
-    private final spielfeld guiReferenz;
+    transient private final spielfeld guiReferenz;
     
     // -------------------------------------------------------------------------
     // ---------------------- Konstruktoren ------------------------------------
@@ -55,8 +62,7 @@ public class Arimaa2 implements Serializable {
         figurenAufsBrett();
         
         // Anzeigen
-        //guiReferenz.generiereFeldUpdate( this.spielfeld );
-        print();
+        //print();
     }
     
     // -------------------------------------------------------------------------
@@ -66,9 +72,40 @@ public class Arimaa2 implements Serializable {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws CloneNotSupportedException {
+    public static void main(String[] args) {
         Arimaa2 a = new Arimaa2( new spielfeld() );
-        a.print();
+        try
+        {
+            FileOutputStream fileOut =
+            new FileOutputStream("C:\\Temp\\arimma.arimma");
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject( a );
+            out.close();
+            fileOut.close();
+            System.out.printf("Serialized data is saved in C:\\Temp\\arimma.arimma");
+        }catch(IOException e)
+        {
+            e.printStackTrace();
+        }
+        
+        try{
+            FileInputStream fileIn = new FileInputStream( "C:\\Temp\\arimma.arimma" );
+            ObjectInputStream in = new ObjectInputStream( fileIn );
+            Arimaa2 a2 = (Arimaa2) in.readObject();
+            in.close();
+            fileIn.close();
+            
+            System.out.println( a.equals( a2 ) );
+            System.out.println( a2.setKords( new Koord( "a3") ) );
+            System.out.println( a2.setKords( new Koord( "a2") ) );
+            a2.print();
+            //a.print();
+        } catch (IOException ex) {
+            Logger.getLogger(Arimaa2.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Arimaa2.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
         /*
         Farbe gewinner;
         
@@ -89,11 +126,7 @@ public class Arimaa2 implements Serializable {
             
         } while( gewinner == null );
         */
-        Arimaa2 a2 = (Arimaa2) a.clone();
-        System.out.println( a2.setKords( new Koord( "a3") ) );
-        System.out.println( a2.setKords( new Koord( "a2") ) );
-        a2.print();
-        a.print();
+        
     }
     
     // -------------------------------------------------------------------------
@@ -144,7 +177,7 @@ public class Arimaa2 implements Serializable {
             //zielKoords = null;
             
             // Anzeigen
-            guiReferenz.generiereFeldUpdate( spielfeld );
+            
             
             print();
             
@@ -286,7 +319,6 @@ public class Arimaa2 implements Serializable {
             }
         
             // Anzeigen
-            guiReferenz.generiereFeldUpdate( spielfeld );
             print();
         
         }
@@ -602,7 +634,7 @@ public class Arimaa2 implements Serializable {
                             
                 festgehalten = true; 
                             
-            } else if( neighbour.getFarbe() == figur.getFarbe() ){
+            } else {
                 
                 // hat eine Figur der eigenen Farbe als Nachbar
                 beschuetzt = true;
@@ -1085,7 +1117,10 @@ public class Arimaa2 implements Serializable {
      * gibt das Spielfeld aus
      */
     public void print() {
-        
+        if( guiReferenz != null ) {
+            
+            guiReferenz.generiereFeldUpdate( spielfeld );
+        } 
         System.out.println( spielfeld.toString() );
     }
     

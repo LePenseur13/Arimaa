@@ -5,11 +5,13 @@
  */
 package arimaa;
 
+import java.io.Serializable;
+
 /**
  * 
  * @author JosefChristoph
  */
-public class Koord {
+public class Koord implements Serializable {
     
     // -------------------------------------------------------------------------
     // -------------------------- Attribute ------------------------------------

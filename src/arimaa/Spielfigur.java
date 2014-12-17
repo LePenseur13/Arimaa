@@ -5,13 +5,15 @@
  */
 package arimaa;
 
+import java.io.Serializable;
+
 /**
  * Änderungen Version 1.1: Javadoc Kommentare hinzugefügt
  * 
  * @author Alexander Holzinger
  * @version 1.1
  */
-public class Spielfigur {
+public class Spielfigur implements Serializable {
     
     // -------------------------------------------------------------------------
     // -------------------------- Attribute ------------------------------------
