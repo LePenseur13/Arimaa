@@ -6,6 +6,7 @@
 package arimaa;
 
 import gui.spielfeld;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Stack;
 
@@ -13,7 +14,7 @@ import java.util.Stack;
  *
  * @author JosefChristoph
  */
-public class Arimaa2 {
+public class Arimaa2 implements Serializable {
     
     // -------------------------------------------------------------------------
     // -------------------------- Attribute ------------------------------------
@@ -65,10 +66,10 @@ public class Arimaa2 {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
-        Arimaa2 a = new Arimaa2( null );
+    public static void main(String[] args) throws CloneNotSupportedException {
+        Arimaa2 a = new Arimaa2( new spielfeld() );
         a.print();
-        
+        /*
         Farbe gewinner;
         
         do {
@@ -87,6 +88,12 @@ public class Arimaa2 {
             }
             
         } while( gewinner == null );
+        */
+        Arimaa2 a2 = (Arimaa2) a.clone();
+        System.out.println( a2.setKords( new Koord( "a3") ) );
+        System.out.println( a2.setKords( new Koord( "a2") ) );
+        a2.print();
+        a.print();
     }
     
     // -------------------------------------------------------------------------
@@ -188,6 +195,12 @@ public class Arimaa2 {
     public Spielfigur getCache() {
         return cache;
     }
+
+    public ArrayList<Koord> getZielKoords() {
+        return zielKoords;
+    }
+    
+    
     
     // -------------------------------------------------------------------------
     // ------------------ AUFSTELLUNG ------------------------------------------
@@ -486,6 +499,20 @@ public class Arimaa2 {
     // -------------------------------------------------------------------------
     
     
+    private ArrayList<Koord> getAllZielKoords( Koord koord ) {
+        
+        ArrayList<Koord> zielKoords = new ArrayList<>();
+
+        
+        Spielfigur figur = spielfeld.get( koord ); 
+        
+        // Es muss eine Figur zum Ziehen da sein
+        if( figur == null ) return zielKoords;
+        
+        
+        return zielKoords;
+    }
+    
     private ArrayList<Koord> getZielKoords( Koord koord ) {
         ArrayList<Koord> zielKoords = new ArrayList<>();
         
@@ -501,7 +528,7 @@ public class Arimaa2 {
             // Darf die Figur sich bewegen oder ist sie festgehalten
             if( isMoveable( koord ) ) {
                 
-                // ermittelt alleverschiebbaren gegnerischen Nachbarn
+                // ermittelt alle verschiebbaren gegnerischen Nachbarn
                 zielKoords.addAll( pushableOpponents( koord ) );
                 
                 // alle mögliche freien Felder
@@ -545,7 +572,11 @@ public class Arimaa2 {
         // falls die Figur schwächer als die zuletztgezogene Figur ist
         boolean weaker = history.getZuletztgezogeneFigur().isStronger( spielfeld.get( koord ) );
         
-        return neighbour && weaker;
+        // AND
+        // Ob dieser Schritt erlaubt ist im hinblick auf Zugwiederhohlung
+        boolean fuehrtZuVerbotenerStellung = fuehrtZuVerbotenerStellung( koord, history.getLetzteStartKoord() );
+        
+        return neighbour && weaker && ! fuehrtZuVerbotenerStellung;
         
     }
     
@@ -606,16 +637,34 @@ public class Arimaa2 {
                     && spielfeld.get( neighbourKoords.get( i ) ).getFarbe() != activePlayer 
                     && figur.isStronger( spielfeld.get( neighbourKoords.get( i ) ) ) ) {
                     
+                    ArrayList<Koord> freeNeigbours = getFreeNeighbours( neighbourKoords.get( i ) );
+                    
                     // Falls die zu schiebende Figur keine freien Nachbarfelder besitzt
                     // Wird auch diese Koordinate entfernt
-                    if( getFreeNeighbours( neighbourKoords.get( i ) ).isEmpty() ) {
+                    if( freeNeigbours.isEmpty() ) {
                         
                         neighbourKoords.remove( neighbourKoords.get( i ) );
+                        
+                    } else {
+                        
+                        for ( Koord freeNeigbour : freeNeigbours ) {
+                            
+                            // Falls nur ein freier Nachbar vorhanden ist
+                            // muss geprüft werden ob durch diesen Schritt 
+                            // eine gültige Stellung herbeigeführt wird
+                            // d.h wenn eine Stellungsänderung zum vorherigen Zug
+                            if ( ! fuehrtZuVerbotenerStellung( koord, neighbourKoords.get( i ), freeNeigbour ) ) {
+                                
+                                neighbourKoords.remove( neighbourKoords.get( i ) );
+                            
+                            }
+                        }
+                        
                     }
                     
                 }else {
                     
-                    // Falls nicht wird Koordinate einfach aus der LIste entfernt
+                    // Falls nicht wird Koordinate einfach aus der Liste entfernt
                     neighbourKoords.remove( neighbourKoords.get( i ) );
                     
                 }
@@ -669,7 +718,7 @@ public class Arimaa2 {
         
         kaninchenRemoveKoordBehind( koord, neighbourKoords );
         
-        stellungsaenderung( koord, neighbourKoords );
+        entferntVerboteneStellungen( koord, neighbourKoords );
         
         return neighbourKoords;
     }
@@ -720,7 +769,7 @@ public class Arimaa2 {
      * @param koord
      * @param koords 
      */
-    private void stellungsaenderung( Koord koord, ArrayList<Koord> koords ) {
+    private void entferntVerboteneStellungen( Koord koord, ArrayList<Koord> koords ) {
         
         for( int i = koords.size() - 1; i >= 0; i-- ) {
             
@@ -740,7 +789,51 @@ public class Arimaa2 {
     }
     
     /**
+     * gewährleistet dass nicht dieselbe Stellung wie
+     * im vorherige Zug auftritt
+     * und dass es keine verbotene Stellung gibt
+     * @param koord
+     * @param koords 
+     */
+    private boolean fuehrtZuVerbotenerStellung( Koord start, Koord ziel ) {
+        
+        Spielfeld spielfeld2 = spielfeld.copy();
+            
+        // probiert Schritt aus
+        spielfeld2.flip( start, ziel );
+            
+        // prüft ob es eine verbotene Stellung ist
+        
+        return isVerboteneStellungen( spielfeld2 );
+
+    }
+    
+    /**
+     * gewährleistet dass nicht dieselbe Stellung wie
+     * im vorherige Zug auftritt
+     * und dass es keine verbotene Stellung gibt
+     * @param start ( eigene Figur )
+     * @param ziel  ( gegnerische Figur )
+     * @param zielPushed ( Zilfeld für gegnerische Figur )
+     * @return true wenn erlaubt
+     */
+    private boolean fuehrtZuVerbotenerStellung( Koord start, Koord ziel, Koord zielPushed ) {
+        
+        Spielfeld spielfeld2 = spielfeld.copy();
+            
+        // probiert Schritt aus
+        spielfeld2.flip( ziel, zielPushed ); // zieht fremde Figur
+        spielfeld2.flip( start, ziel ); // zieht eigene Figur nach
+        
+        // prüft ob es eine verbotene Stellung ist
+        
+        return isVerboteneStellungen( spielfeld2 );
+
+    }
+    
+    /**
      * Prüft ob diese Stellung eine der verbotenen ist 
+     * Pull
      * @param feld
      * @return verboten ?
      */
@@ -852,7 +945,7 @@ public class Arimaa2 {
      */
     public void fallenFelderCheck(){
         
-        final Koord[] fallenFelder = { new Koord( "c3" ), new Koord( "f3" ), new Koord( "c6" ), new Koord( "f6" ) };
+        final Koord[] FALLENFELDER = { new Koord( "c3" ), new Koord( "f3" ), new Koord( "c6" ), new Koord( "f6" ) };
         
        //Am Ende des Verfahrens wird entschieden, ob das Opfer für schuldig erklärt wird
         //und aus dem öfffentlichen Lebe in eine Irrenanstalt für geistig behinderte
@@ -861,7 +954,7 @@ public class Arimaa2 {
         boolean schuldig = true;
         
         //Jede TodesStelle wird untersucht
-        for ( Koord todesStelle : fallenFelder ){
+        for ( Koord todesStelle : FALLENFELDER ){
             
             Spielfigur opfer = spielfeld.get( todesStelle );
             
@@ -887,7 +980,7 @@ public class Arimaa2 {
                 // Falls schuldig wird das Urteil vollstreckt
                 if ( schuldig ){
                     
-                    spielfeld.set(todesStelle, null);
+                    spielfeld.set( todesStelle, null );
                 }
             }
        }

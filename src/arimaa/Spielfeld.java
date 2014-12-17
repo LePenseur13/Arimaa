@@ -228,16 +228,28 @@ public class Spielfeld {
     // -------------------------------------------------------------------------
     
     /**
-     *
-     * @param spielfeld Feld mit dem verglichen wird
-     * @return 
-     * @throws IndexOutOfBoundsException
-     * @author Alexander Holzinger
-     * @version 1.0
+     * Normales equals
+     * @param obj
+     * @return equals?
      */
-    public boolean equals( Spielfeld spielfeld ) {
-        return Arrays.deepEquals( feld, spielfeld.feld );
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        
+        final Spielfeld other = (Spielfeld) obj;
+        
+        if ( ! Arrays.deepEquals( this.feld, other.feld ) ) {
+            return false;
+        }
+        return true;
     }
+    
+    
     
     /**
      * 

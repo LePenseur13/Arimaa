@@ -35,6 +35,7 @@ public class History {
     public History(){
         history = new ArrayList();
         verboteneStellungen = new ArrayList();
+        grenze = 0;
     }
     
     
@@ -42,6 +43,48 @@ public class History {
     // --------------------------- METHODEN ------------------------------------
     // -------------------------------------------------------------------------
     
+    public static void main( String[] args ) {
+        
+        History h = new History();
+        Spielfeld sp = new Spielfeld();
+        
+        h.addEntry( sp );
+        System.out.println( "1\n" + h.getVerboteneStellungen() );
+        h.addEntry( sp );
+        System.out.println( "2\n" + h.getVerboteneStellungen() );
+        
+        sp.set( new Koord( "a1" ), new Spielfigur( Farbe.Silber, Typ.Katze ) );
+        
+        h.addEntry( sp );
+        System.out.println( "3\n" + h.getVerboteneStellungen() );
+        
+        //sp.set( new Koord( "a1" ), new Spielfigur(Farbe.Silber, Typ.Katze) );
+        
+        h.addEntry( sp );
+        System.out.println( "4\n" + h.getVerboteneStellungen() );
+        
+        sp.flip( new Koord( "a1" ), new Koord( "a2" ) );
+        
+        
+        h.addEntry( sp );
+        System.out.println( "5\n" + h.getVerboteneStellungen() );
+        
+        sp.set( new Koord( "b4" ), new Spielfigur( Farbe.Silber, Typ.Katze ) );
+        
+        h.addEntry( sp );
+        System.out.println( "6\n" + h.getVerboteneStellungen() );
+        
+        sp.flip( new Koord( "a2" ), new Koord( "a3" ) );
+        
+        h.addEntry( sp );
+        System.out.println( "7\n" + h.getVerboteneStellungen() );
+        
+        sp.del( new Koord( "a3" ) );
+        
+        h.addEntry( sp );
+        System.out.println( "8\n" + h.getVerboteneStellungen() );
+        
+    }
     
     // -------------------------------------------------------------------------
     // --------------------------- ADDENTRY ------------------------------------
@@ -54,15 +97,17 @@ public class History {
      */
     public void addEntry( Spielfeld spielfeld ){
         
-        letzterEintrag = spielfeld.copy();
-        history.add( letzterEintrag );
-        
         if ( spielfeld.getFigurenAnzahl() < this.figurenAnzahl ){
             
             grenze = history.size() - 1;
             this.figurenAnzahl = spielfeld.getFigurenAnzahl();
-            verboteneStellungen.clear();
         }
+        
+        letzterEintrag = spielfeld.copy();
+        history.add( letzterEintrag );
+        figurenAnzahl = letzterEintrag.getFigurenAnzahl();
+        
+        
         
         calculateVerboteneStellungen();
     }
@@ -79,6 +124,11 @@ public class History {
      */
     private void calculateVerboteneStellungen() {
         
+        verboteneStellungen.clear();
+        
+        // letzte Stellung ist immer verboten
+        verboteneStellungen.add( letzterEintrag );
+        
         // Es ist nür nötig bis zu grenze 
         // da ab dort eine andere Anzahl an 
         // Figuren auf dem Feld ist
@@ -87,14 +137,14 @@ public class History {
                 
                 // Falls zwei Spielfelder ident sind 
                 // werden sie zu den verbotenen Stellungen hinzugefügt
-                if( history.get( i ).equals( history.get( j ) ) ) {
-                    
+                if( history.get( i ).equals( history.get( j ) ) 
+                        && ! verboteneStellungen.contains( history.get( i ) ) ) {
+
                     verboteneStellungen.add( history.get( i ) );
                 }
             }
         }
 
-        verboteneStellungen.add( letzterEintrag );
     }
     
     // -------------------------------------------------------------------------
@@ -136,5 +186,5 @@ public class History {
     public String toString() {
         return "History{" + "history=" + history + ", verboteneStellungen=" + verboteneStellungen + ", letzterEintrag=" + letzterEintrag + ", figurenAnzahl=" + figurenAnzahl + ", i=" + grenze + ", letzteStartKoord=" + letzteStartKoord + ", zuletztgezogeneFigur=" + zuletztgezogeneFigur + '}';
     }
-
+    
 }
